@@ -1,0 +1,36 @@
+// Instructional areas and the Finance cluster exam blueprint (items per level, 100 each).
+export const AREAS = [
+  { id: 'FI', name: 'Financial analysis' },
+  { id: 'PD', name: 'Professional development' },
+  { id: 'FM', name: 'Financial-information management' },
+  { id: 'EI', name: 'Emotional intelligence' },
+  { id: 'BL', name: 'Business law' },
+  { id: 'RM', name: 'Risk management' },
+  { id: 'OP', name: 'Operations' },
+  { id: 'NF', name: 'Information management' },
+  { id: 'EC', name: 'Economics' },
+  { id: 'CR', name: 'Customer relations' },
+  { id: 'CO', name: 'Communications' },
+  { id: 'EN', name: 'Entrepreneurship' },
+  { id: 'HR', name: 'Human resources management' },
+  { id: 'MK', name: 'Marketing' },
+  { id: 'SM', name: 'Strategic management' },
+];
+
+export const BLUEPRINT = {
+  FI: { district: 24, association: 28, icdc: 30 },
+  PD: { district: 13, association: 14, icdc: 15 },
+  FM: { district: 9, association: 10, icdc: 12 },
+  EI: { district: 9, association: 8, icdc: 6 },
+  BL: { district: 7, association: 8, icdc: 7 },
+  RM: { district: 6, association: 7, icdc: 9 },
+  OP: { district: 6, association: 5, icdc: 4 },
+  NF: { district: 6, association: 5, icdc: 5 },
+  EC: { district: 6, association: 5, icdc: 4 },
+  CR: { district: 5, association: 5, icdc: 4 },
+  CO: { district: 5, association: 4, icdc: 3 },
+  EN: { district: 1, association: 0, icdc: 0 },
+  HR: { district: 1, association: 0, icdc: 0 },
+  MK: { district: 1, association: 1, icdc: 1 },
+  SM: { district: 1, association: 0, icdc: 0 },
+};

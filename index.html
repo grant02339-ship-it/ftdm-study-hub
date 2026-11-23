@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FTDM Study Hub</title>
+<meta name="description" content="Study for the DECA Financial Services Team Decision Making exam, offline.">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FAF7F2" media="(prefers-color-scheme: light)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FTDM">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/practice.css">
+<script>
+  // Apply a saved light/dark override before first paint to avoid a theme flash.
+  try {
+    var s = JSON.parse(localStorage.getItem('ftdm.v1'));
+    var t = s && s.settings && s.settings.theme;
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<script type="module" src="js/app.js"></script>
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar" aria-label="Sidebar"></nav>
+  <header class="topbar" aria-hidden="true"><span class="topbar-title"></span></header>
+  <div class="content">
+    <main id="view" tabindex="-1"></main>
+  </div>
+  <nav class="tabbar" aria-label="Main"></nav>
+</div>
+<noscript><p style="padding:24px">FTDM Study Hub needs JavaScript turned on.</p></noscript>
+</body>
+</html>
