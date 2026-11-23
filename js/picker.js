@@ -9,8 +9,13 @@ const BLURB = {
   mtdm: 'Market planning, research, branding and promotion strategy.',
   htdm: 'Hotels, restaurants, guest service and selling.',
   ttdm: 'Destinations, travel products, promotion and planning.',
+  pbm: 'Business core: management, operations and communication.',
+  pen: 'Business core with a start-up and small business lens.',
+  pfn: 'Business core: money, financial analysis and economics.',
+  pht: 'Business core for hotels, restaurants and travel.',
+  pmk: 'Business core: customers, communication and marketing basics.',
 };
-const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP', htdm: 'CR', ttdm: 'MP' };
+const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP', htdm: 'CR', ttdm: 'MP', pbm: 'OP', pen: 'EN', pfn: 'FI', pht: 'CR', pmk: 'MK' };
 
 function checkMark() {
   const t = document.createElement('template');
@@ -19,16 +24,22 @@ function checkMark() {
 }
 
 // One big rounded card per event. selectedId marks the current one (Settings); onPick(event) fires on tap.
+const GROUP_LABEL = { tdm: 'Team decision making', principles: 'Principles (first-year members)' };
+
 function eventCards(selectedId, onPick) {
-  return EVENTS.map(ev => {
+  let lastGroup = null;
+  return EVENTS.flatMap(ev => {
     const on = ev.id === selectedId;
-    return h('button', { class: `ev-card${on ? ' on' : ''}`, type: 'button', 'aria-pressed': on ? 'true' : 'false', onclick: () => onPick(ev) },
+    const group = ev.group || 'tdm';
+    const header = group !== lastGroup ? [h('h2', { class: 'gh ev-group' }, GROUP_LABEL[group] || '')] : [];
+    lastGroup = group;
+    return [...header, h('button', { class: `ev-card${on ? ' on' : ''}`, type: 'button', 'aria-pressed': on ? 'true' : 'false', onclick: () => onPick(ev) },
       h('span', { class: 'ev-ico' }, icon(GLYPH[ev.id] || 'lesson')),
       h('span', { class: 'ev-txt' },
         h('span', { class: 'ev-name' }, ev.short),
         h('span', { class: 'ev-sub' }, BLURB[ev.id] || ev.name),
         h('span', { class: 'ev-full' }, ev.name)),
-      h('span', { class: 'ev-check', 'aria-hidden': 'true' }, on ? checkMark() : icon('chevron')));
+      h('span', { class: 'ev-check', 'aria-hidden': 'true' }, on ? checkMark() : icon('chevron')))];
   });
 }
 

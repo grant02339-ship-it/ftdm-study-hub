@@ -17,6 +17,8 @@ export function currentEvent(state) {
 // Set of PI codes on the event's exam (tier-1 core plus the cluster's tier-2 PIs).
 export function eventPis(event, pis = ALL.PIS) {
   const cluster = typeof event === 'string' ? (eventById(event) || {}).cluster : event.cluster;
+  // The Principles exam ('core') draws only on the tier-1 Business Administration Core.
+  if (cluster === 'core') return new Set(pis.filter(p => p.tier === 1).map(p => p.code));
   return new Set(pis.filter(p => !p.clusters || p.clusters.includes(cluster)).map(p => p.code));
 }
 

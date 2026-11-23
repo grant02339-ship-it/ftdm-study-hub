@@ -9,6 +9,11 @@ export const EVENTS = [
   { id: 'mtdm', name: 'Marketing Management Team Decision Making', short: 'Marketing Management', cluster: 'marketing' },
   { id: 'htdm', name: 'Hospitality Services Team Decision Making', short: 'Hospitality Services', cluster: 'hospitality' },
   { id: 'ttdm', name: 'Travel and Tourism Team Decision Making', short: 'Travel & Tourism', cluster: 'hospitality' },
+  { id: 'pbm', name: 'Principles of Business Management and Administration', short: 'Principles of Business Management', cluster: 'core', group: 'principles' },
+  { id: 'pen', name: 'Principles of Entrepreneurship', short: 'Principles of Entrepreneurship', cluster: 'core', group: 'principles' },
+  { id: 'pfn', name: 'Principles of Finance', short: 'Principles of Finance', cluster: 'core', group: 'principles' },
+  { id: 'pht', name: 'Principles of Hospitality and Tourism', short: 'Principles of Hospitality & Tourism', cluster: 'core', group: 'principles' },
+  { id: 'pmk', name: 'Principles of Marketing', short: 'Principles of Marketing', cluster: 'core', group: 'principles' },
 ];
 export const DEFAULT_EVENT = 'ftdm';
 
@@ -81,6 +86,26 @@ export const CLUSTERS = {
       QM: { district: 1, association: 1, icdc: 1 },
       EN: { district: 1, association: 0, icdc: 0 },
       KM: { district: 0, association: 1, icdc: 1 },
+    },
+  },
+  core: {
+    name: 'Business administration core',
+    areas: ['EI', 'FI', 'CO', 'OP', 'PD', 'NF', 'EC', 'CR', 'BL', 'HR', 'MK', 'EN', 'SM'],
+    names: { EI: 'Emotional intelligence', FI: 'Financial analysis', CO: 'Communications', OP: 'Operations', PD: 'Professional development', NF: 'Information management', EC: 'Economics', CR: 'Customer relations', BL: 'Business law', HR: 'Human resources management', MK: 'Marketing', EN: 'Entrepreneurship', SM: 'Strategic management' },
+    blueprint: {
+      EI: { district: 22, association: 22, icdc: 19 },
+      FI: { district: 16, association: 16, icdc: 13 },
+      CO: { district: 15, association: 15, icdc: 11 },
+      OP: { district: 11, association: 11, icdc: 13 },
+      PD: { district: 11, association: 11, icdc: 9 },
+      NF: { district: 10, association: 10, icdc: 11 },
+      EC: { district: 7, association: 7, icdc: 12 },
+      CR: { district: 5, association: 5, icdc: 4 },
+      BL: { district: 1, association: 1, icdc: 4 },
+      HR: { district: 1, association: 1, icdc: 1 },
+      MK: { district: 1, association: 1, icdc: 1 },
+      EN: { district: 0, association: 0, icdc: 1 },
+      SM: { district: 0, association: 0, icdc: 1 },
     },
   },
 };
