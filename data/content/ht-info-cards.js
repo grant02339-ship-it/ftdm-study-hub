@@ -1,0 +1,32 @@
+// ht-info flashcards.
+
+export default [
+  { id: `c-hti-001`, area: `NF`, pi: `NF:060`, front: `Property management system (PMS)`, back: `Hotel software that manages reservations, check-in and check-out, room status and guest billing.` },
+  { id: `c-hti-002`, area: `NF`, pi: `NF:060`, front: `Central reservation system`, back: `A system that shows real-time availability and takes bookings across many channels so rooms or seats are not double sold.` },
+  { id: `c-hti-003`, area: `NF`, pi: `NF:313`, front: `Mobile technology in travel`, back: `Apps, digital keys, mobile boarding passes, mobile payments and alerts that let guests do tasks from their phones.` },
+  { id: `c-hti-004`, area: `NF`, pi: `NF:106`, front: `Automation`, back: `Using software to complete routine tasks, such as confirmations and reminders, without doing each step by hand.` },
+  { id: `c-hti-005`, area: `NF`, pi: `NF:048`, front: `Trend vs. issue`, back: `A trend is a general direction of change, like sustainable travel. An issue is a concern the business must manage.` },
+  { id: `c-hti-006`, area: `NF`, pi: `NF:205`, front: `Web analytics`, back: `Tools that report where website visitors come from and what they do on the site.` },
+  { id: `c-hti-007`, area: `NF`, pi: `NF:205`, front: `Conversion rate`, back: `The percent of visitors who complete a goal, such as booking.`, formula: `Bookings ÷ Visitors × 100` },
+  { id: `c-hti-008`, area: `NF`, pi: `NF:282`, front: `Primary information`, back: `New data collected firsthand to answer a specific question, such as a survey of your own guests.` },
+  { id: `c-hti-009`, area: `NF`, pi: `NF:281`, front: `Secondary information`, back: `Data already collected by someone else for another purpose, such as government tourism reports.` },
+  { id: `c-hti-010`, area: `NF`, pi: `NF:283`, front: `Observation`, back: `Collecting information by watching behavior without asking questions.` },
+  { id: `c-hti-011`, area: `NF`, pi: `NF:283`, front: `Focus group`, back: `A small group guided by a moderator to discuss opinions and ideas.` },
+  { id: `c-hti-012`, area: `NF`, pi: `NF:284`, front: `Customer database`, back: `An organized, searchable collection of guest records, such as stays, preferences and spending.` },
+  { id: `c-hti-013`, area: `NF`, pi: `NF:285`, front: `Unstructured data`, back: `Data without a set format, such as review text, emails and photos. It is harder to organize and analyze.` },
+  { id: `c-hti-014`, area: `NF`, pi: `NF:280`, front: `Occupancy rate`, back: `The percent of available rooms that were sold.`, formula: `Rooms sold ÷ Rooms available` },
+  { id: `c-hti-015`, area: `NF`, pi: `NF:280`, front: `Average daily rate (ADR)`, back: `The average room revenue earned for each room sold.`, formula: `Room revenue ÷ Rooms sold` },
+  { id: `c-hti-016`, area: `NF`, pi: `NF:280`, front: `RevPAR`, back: `Revenue per available room. It equals room revenue divided by rooms available, or occupancy times ADR.`, formula: `Room revenue ÷ Rooms available` },
+  { id: `c-hti-017`, area: `NF`, pi: `NF:236`, front: `Mean`, back: `The average of a set of numbers.`, formula: `Sum of values ÷ Number of values` },
+  { id: `c-hti-018`, area: `NF`, pi: `NF:236`, front: `Median`, back: `The middle value when numbers are listed in order. It is less affected by outliers than the mean.` },
+  { id: `c-hti-019`, area: `NF`, pi: `NF:236`, front: `Mode`, back: `The value that appears most often in a data set.` },
+  { id: `c-hti-020`, area: `NF`, pi: `NF:237`, front: `Range`, back: `How spread out the data is.`, formula: `Highest value - Lowest value` },
+  { id: `c-hti-021`, area: `NF`, pi: `NF:237`, front: `Outlier`, back: `A value far from the others. It can distort the mean, so the median may be a better typical value.` },
+  { id: `c-hti-022`, area: `NF`, pi: `NF:289`, front: `Line graph vs. pie chart`, back: `Use a line graph to show change over time. Use a pie chart to show parts of a whole.` },
+  { id: `c-hti-023`, area: `NF`, pi: `NF:292`, front: `Executive summary`, back: `A short overview at the start of a written report that gives the main findings and recommendations.` },
+  { id: `c-hti-024`, area: `NF`, pi: `NF:287`, front: `Environmental scanning`, back: `Tracking outside changes, including technological, guest trend, economic and regulatory changes.` },
+  { id: `c-hti-025`, area: `KM`, pi: `KM:005`, front: `Mentoring vs. job shadowing`, back: `Mentoring is ongoing guidance from an experienced employee. Job shadowing is following someone to observe how the job is done.` },
+  { id: `c-hti-026`, area: `QM`, pi: `QM:001`, front: `Quality management`, back: `The ongoing effort to consistently meet or exceed guest expectations using standards, training and measurement.` },
+  { id: `c-hti-027`, area: `QM`, pi: `QM:003`, front: `Continuous improvement`, back: `Making small, steady improvements over time instead of a one-time fix.` },
+  { id: `c-hti-028`, area: `QM`, pi: `QM:003`, front: `Plan-Do-Check-Act`, back: `A four-step improvement cycle: plan a change, try it, check results, then adopt or adjust it.` }
+];

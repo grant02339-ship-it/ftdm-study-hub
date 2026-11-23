@@ -1,5 +1,5 @@
 // Competitive events and the career-cluster exam each one is built on.
-// Finance reuses areas.js; Marketing carries its own areas + blueprint (research_notes/DECA marketing cluster exam).
+// Finance reuses areas.js; Marketing and Hospitality carry their own areas + blueprint (research_notes/DECA <cluster> cluster exam).
 import { AREAS, BLUEPRINT } from './areas.js';
 
 export const EVENTS = [
@@ -7,6 +7,8 @@ export const EVENTS = [
   { id: 'stdm', name: 'Sports and Entertainment Marketing Team Decision Making', short: 'Sports & Entertainment Marketing', cluster: 'marketing' },
   { id: 'btdm', name: 'Buying and Merchandising Team Decision Making', short: 'Buying & Merchandising', cluster: 'marketing' },
   { id: 'mtdm', name: 'Marketing Management Team Decision Making', short: 'Marketing Management', cluster: 'marketing' },
+  { id: 'htdm', name: 'Hospitality Services Team Decision Making', short: 'Hospitality Services', cluster: 'hospitality' },
+  { id: 'ttdm', name: 'Travel and Tourism Team Decision Making', short: 'Travel & Tourism', cluster: 'hospitality' },
 ];
 export const DEFAULT_EVENT = 'ftdm';
 
@@ -51,6 +53,34 @@ export const CLUSTERS = {
       HR: { district: 1, association: 0, icdc: 0 },
       MK: { district: 1, association: 1, icdc: 1 },
       SM: { district: 1, association: 0, icdc: 0 },
+    },
+  },
+  hospitality: {
+    name: 'Hospitality and tourism',
+    areas: ['NF', 'OP', 'EI', 'CR', 'FI', 'PD', 'SE', 'PM', 'EC', 'CO', 'BL', 'SM', 'PR', 'HR', 'MP', 'MK', 'RM', 'PI', 'QM', 'EN', 'KM'],
+    names: { NF: 'Information management', OP: 'Operations', EI: 'Emotional intelligence', CR: 'Customer relations', FI: 'Financial analysis', PD: 'Professional development', SE: 'Selling', PM: 'Product/service management', EC: 'Economics', CO: 'Communications', BL: 'Business law', SM: 'Strategic management', PR: 'Promotion', HR: 'Human resources management', MP: 'Market planning', MK: 'Marketing', RM: 'Risk management', PI: 'Pricing', QM: 'Quality management', EN: 'Entrepreneurship', KM: 'Knowledge management' },
+    blueprint: {
+      NF: { district: 14, association: 15, icdc: 15 },
+      OP: { district: 13, association: 13, icdc: 13 },
+      EI: { district: 9, association: 9, icdc: 7 },
+      CR: { district: 8, association: 9, icdc: 9 },
+      FI: { district: 8, association: 7, icdc: 7 },
+      PD: { district: 8, association: 7, icdc: 6 },
+      SE: { district: 7, association: 8, icdc: 9 },
+      PM: { district: 6, association: 7, icdc: 9 },
+      EC: { district: 6, association: 6, icdc: 5 },
+      CO: { district: 5, association: 4, icdc: 3 },
+      BL: { district: 3, association: 3, icdc: 2 },
+      SM: { district: 3, association: 2, icdc: 2 },
+      PR: { district: 2, association: 3, icdc: 3 },
+      HR: { district: 2, association: 1, icdc: 1 },
+      MP: { district: 1, association: 1, icdc: 2 },
+      MK: { district: 1, association: 1, icdc: 2 },
+      RM: { district: 1, association: 1, icdc: 2 },
+      PI: { district: 1, association: 1, icdc: 1 },
+      QM: { district: 1, association: 1, icdc: 1 },
+      EN: { district: 1, association: 0, icdc: 0 },
+      KM: { district: 0, association: 1, icdc: 1 },
     },
   },
 };

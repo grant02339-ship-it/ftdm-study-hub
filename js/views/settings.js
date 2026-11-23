@@ -146,7 +146,10 @@ export function render(el, params, ctx) {
     h('h2', { class: 'gh' }, 'About'),
     h('div', { class: 'group' }, h('div', { class: 'row' }, h('div', { class: 'ico' }, ICON.info()),
       h('div', { class: 't' }, 'DECA Study Buddy', h('small', null, `Version ${APP_VERSION} · Works offline`))), updBtn),
-    h('p', { class: 'note' }, 'An independent study app for DECA Team Decision Making exams. Not affiliated with or endorsed by DECA Inc. Practice questions are original.'));
+    h('p', { class: 'note' }, 'An independent study app for DECA Team Decision Making exams. Not affiliated with or endorsed by DECA Inc. Practice questions are original.'),
+    h('div', { class: 'st-credit' },
+      h('span', null, 'Developed by'),
+      h('img', { src: 'icons/prov.svg', alt: 'PROV Software', width: '210', height: '46' })));
 }
 
 function confirmReset(ctx, done) {

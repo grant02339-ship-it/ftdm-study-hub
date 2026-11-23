@@ -15,14 +15,20 @@ import g_info from './content/info.js';
 import g_mkt_promo from './content/mkt-promo.js';
 import g_mkt_product from './content/mkt-product.js';
 import g_mkt_research from './content/mkt-research.js';
+import g_ht_info from './content/ht-info.js';
+import g_ht_ops from './content/ht-ops.js';
+import g_ht_guest from './content/ht-guest.js';
+import g_ht_market from './content/ht-market.js';
 
 // Explicit registry (no filesystem globbing in a no-build app). Each entry: {lessons,questions,cards,videos}.
-const MODULES = [g_fi_core, g_fi_cluster, g_pd, g_ei, g_law, g_econ, g_crco, g_ops, g_info, g_mkt_promo, g_mkt_product, g_mkt_research];
+const MODULES = [g_fi_core, g_fi_cluster, g_pd, g_ei, g_law, g_econ, g_crco, g_ops, g_info, g_mkt_promo, g_mkt_product, g_mkt_research, g_ht_info, g_ht_ops, g_ht_guest, g_ht_market];
 
 // Flipped to true by Task 8 once every PI has a lesson section.
 export const COVERAGE_REQUIRED = true;
 // Flip to true once the Marketing tier-2 content (content/mkt-*.js) is registered in MODULES.
 export const MARKETING_READY = true;
+// Flip to true once the Hospitality and tourism content (content/ht-*.js) is registered in MODULES.
+export const HOSPITALITY_READY = true;
 
 export { PIS, AREAS, BLUEPRINT };
 export const LESSONS = MODULES.flatMap(m => m.lessons || []);

@@ -7,8 +7,10 @@ const BLURB = {
   stdm: 'Promotion, pricing, selling and sports and entertainment cases.',
   btdm: 'Retail buying, merchandising, pricing and product mix.',
   mtdm: 'Market planning, research, branding and promotion strategy.',
+  htdm: 'Hotels, restaurants, guest service and selling.',
+  ttdm: 'Destinations, travel products, promotion and planning.',
 };
-const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP' };
+const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP', htdm: 'CR', ttdm: 'MP' };
 
 function checkMark() {
   const t = document.createElement('template');

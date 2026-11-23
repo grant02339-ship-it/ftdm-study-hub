@@ -1223,5 +1223,319 @@ export default {
    "audio": "media/v-mim-channels-7.m4a",
    "dur": 6
   }
+ ],
+ "v-hti-guest-data": [
+  {
+   "audio": "media/v-hti-guest-data-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-hti-guest-data-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-hti-guest-data-2.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hti-guest-data-3.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hti-guest-data-4.m4a",
+   "dur": 9
+  },
+  {
+   "audio": "media/v-hti-guest-data-5.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hti-guest-data-6.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hti-guest-data-7.m4a",
+   "dur": 8
+  }
+ ],
+ "v-hti-primary-secondary": [
+  {
+   "audio": "media/v-hti-primary-secondary-0.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-hti-primary-secondary-1.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hti-primary-secondary-2.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hti-primary-secondary-3.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-hti-primary-secondary-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-hti-primary-secondary-5.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-hti-primary-secondary-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-hti-primary-secondary-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-hto-emergency": [
+  {
+   "audio": "media/v-hto-emergency-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-hto-emergency-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-hto-emergency-2.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-hto-emergency-3.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hto-emergency-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-hto-emergency-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-hto-emergency-6.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-hto-emergency-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-hto-card-fraud": [
+  {
+   "audio": "media/v-hto-card-fraud-0.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-hto-card-fraud-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-hto-card-fraud-2.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hto-card-fraud-3.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hto-card-fraud-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-hto-card-fraud-5.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-hto-card-fraud-6.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-hto-card-fraud-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-htg-guest-loyalty": [
+  {
+   "audio": "media/v-htg-guest-loyalty-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-1.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-2.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-3.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-5.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-6.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-7.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htg-guest-loyalty-8.m4a",
+   "dur": 4
+  }
+ ],
+ "v-htg-upselling": [
+  {
+   "audio": "media/v-htg-upselling-0.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-htg-upselling-1.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htg-upselling-2.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-htg-upselling-3.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-htg-upselling-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htg-upselling-5.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-htg-upselling-6.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-htg-upselling-7.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htg-upselling-8.m4a",
+   "dur": 4
+  }
+ ],
+ "v-htm-destination-marketing": [
+  {
+   "audio": "media/v-htm-destination-marketing-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htm-destination-marketing-1.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-htm-destination-marketing-2.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htm-destination-marketing-3.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-htm-destination-marketing-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-htm-destination-marketing-5.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htm-destination-marketing-6.m4a",
+   "dur": 9
+  },
+  {
+   "audio": "media/v-htm-destination-marketing-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-htm-packaging-travel": [
+  {
+   "audio": "media/v-htm-packaging-travel-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htm-packaging-travel-1.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htm-packaging-travel-2.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htm-packaging-travel-3.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-htm-packaging-travel-4.m4a",
+   "dur": 11
+  },
+  {
+   "audio": "media/v-htm-packaging-travel-5.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htm-packaging-travel-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htm-packaging-travel-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-htm-hospitality-careers": [
+  {
+   "audio": "media/v-htm-hospitality-careers-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-htm-hospitality-careers-1.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-htm-hospitality-careers-2.m4a",
+   "dur": 9
+  },
+  {
+   "audio": "media/v-htm-hospitality-careers-3.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-htm-hospitality-careers-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htm-hospitality-careers-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-htm-hospitality-careers-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-htm-hospitality-careers-7.m4a",
+   "dur": 6
+  }
  ]
 };
