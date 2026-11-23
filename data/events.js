@@ -5,6 +5,8 @@ import { AREAS, BLUEPRINT } from './areas.js';
 export const EVENTS = [
   { id: 'ftdm', name: 'Financial Services Team Decision Making', short: 'Financial Services', cluster: 'finance' },
   { id: 'stdm', name: 'Sports and Entertainment Marketing Team Decision Making', short: 'Sports & Entertainment Marketing', cluster: 'marketing' },
+  { id: 'btdm', name: 'Buying and Merchandising Team Decision Making', short: 'Buying & Merchandising', cluster: 'marketing' },
+  { id: 'mtdm', name: 'Marketing Management Team Decision Making', short: 'Marketing Management', cluster: 'marketing' },
 ];
 export const DEFAULT_EVENT = 'ftdm';
 

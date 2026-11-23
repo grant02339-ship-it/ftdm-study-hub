@@ -5,8 +5,10 @@ import { EVENTS, currentEvent, examEvent } from './event.js';
 const BLURB = {
   ftdm: 'Banking, investing, insurance and financial analysis.',
   stdm: 'Promotion, pricing, selling and sports and entertainment cases.',
+  btdm: 'Retail buying, merchandising, pricing and product mix.',
+  mtdm: 'Market planning, research, branding and promotion strategy.',
 };
-const GLYPH = { ftdm: 'FI', stdm: 'MK' };
+const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP' };
 
 function checkMark() {
   const t = document.createElement('template');
