@@ -344,3 +344,38 @@ export function layers(ids, edges) {
   back.sort((x, y) => x - y);
   return { rank, back };
 }
+
+/* ---------- Playback speed, thumbnails and durations (pure, shared by Learn, lessons and the player) ---------- */
+
+export const REEL_SPEEDS = [1, 1.25, 1.5, 1.75];
+export const DEFAULT_REEL_SPEED = 1.25;
+
+// The offered speed closest to `v`; anything that isn't a number falls back to the default.
+export function snapSpeed(v) {
+  if (typeof v !== 'number' || !Number.isFinite(v)) return DEFAULT_REEL_SPEED;
+  return REEL_SPEEDS.reduce((best, x) => (Math.abs(x - v) < Math.abs(best - v) ? x : best), REEL_SPEEDS[0]);
+}
+
+// Which scene best represents a video as a still: first chart, else diagram, else formula,
+// else compare, else the title (or just the first scene). Returns an index, or -1 for no scenes.
+export function pickThumbScene(scenes) {
+  const list = Array.isArray(scenes) ? scenes : [];
+  if (!list.length) return -1;
+  for (const kind of ['chart', 'diagram', 'formula', 'compare', 'title']) {
+    const i = list.findIndex(sc => sc && sc.kind === kind);
+    if (i >= 0) return i;
+  }
+  return 0;
+}
+
+// m:ss for a number of seconds (rounded to the nearest second; bad input reads 0:00).
+export function fmtClock(sec) {
+  const n = Number.isFinite(sec) && sec > 0 ? Math.round(sec) : 0;
+  return `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`;
+}
+
+// How long a video plays at `speed`, as m:ss.
+export function videoClock(scenes, speed = DEFAULT_REEL_SPEED) {
+  const sp = Number.isFinite(speed) && speed > 0 ? speed : 1;
+  return fmtClock(timeline(scenes).total / sp);
+}

@@ -9,7 +9,7 @@ export function defaultState() {
     cards: {},     // cid -> {box, due}
     exams: [],     // [{date, level, score, byArea}]
     activeExam: null,
-    settings: { level: 'district', confDate: null, theme: 'auto', narrate: true },
+    settings: { level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25 },
     streak: { count: 0, lastDay: null },
   };
 }
@@ -67,6 +67,7 @@ function fixSettings(s) {
     confDate: isDay(s.confDate) ? s.confDate : null,
     theme: THEMES.includes(s.theme) ? s.theme : d.theme,
     narrate: typeof s.narrate === 'boolean' ? s.narrate : d.narrate,
+    reelSpeed: fin(s.reelSpeed) && s.reelSpeed >= 0.75 && s.reelSpeed <= 2 ? s.reelSpeed : d.reelSpeed,
   };
   if (typeof s.confName === 'string') out.confName = s.confName.slice(0, 60);
   return out;

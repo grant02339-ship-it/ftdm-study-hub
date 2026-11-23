@@ -2,6 +2,8 @@
 // Area page (#/learn/:area): that area's lessons and videos, plus area practice.
 import { h, icon } from '../ui.js';
 import { areaMastery } from '../progress.js';
+import { videoThumb } from '../reel-thumb.js';
+import { videoClock, snapSpeed } from '../player-timeline.js';
 
 export const LEVEL_NAME = { district: 'District', association: 'Association', icdc: 'ICDC' };
 const levelOf = state => (LEVEL_NAME[state.settings.level] ? state.settings.level : 'district');
@@ -12,10 +14,9 @@ export function examLine(items, level) {
     : `Not on the exam at ${LEVEL_NAME[level]}`;
 }
 
-export function videoMinutes(video) {
-  const sec = (video.scenes || []).reduce((t, sc) => t + (sc.dur || 0), 0);
-  return Math.max(1, Math.round(sec / 60));
-}
+// Run time as m:ss at the reel speed the student watches at (default 1.25x).
+export const reelSpeedOf = state => snapSpeed(state && state.settings && state.settings.reelSpeed);
+export const videoLength = (video, state) => videoClock(video.scenes || [], reelSpeedOf(state));
 
 // The quiz route Task 7 reads: #/quiz?pis=<comma-separated PI codes>&n=<count>
 export const quizHref = (pis, n = 10) => `#/quiz?pis=${encodeURIComponent(pis.join(','))}&n=${n}`;
@@ -73,14 +74,10 @@ export function lessonRow(lesson, sub) {
     star ? h('span', null, h('span', { class: 'sr-only' }, 'Starred: '), lesson.title) : lesson.title, subtitle);
 }
 
-function videoCard(video, areaName) {
-  return h('a', { class: 'vcard', href: `#/watch/${encodeURIComponent(video.id)}` },
-    h('div', { class: 'vposter', 'aria-hidden': 'true' },
-      h('span', { class: 'vglyph' }, icon(video.area)),
-      h('span', { class: 'vplay' }, icon('play')),
-      h('span', { class: 'vdur num' }, `${videoMinutes(video)} min`)),
-    h('div', { class: 'vtitle' }, video.title),
-    h('div', { class: 'vmeta' }, areaName));
+function videoCard(video, areaName, state) {
+  const len = videoLength(video, state);
+  return h('a', { class: 'vcard', href: `#/watch/${encodeURIComponent(video.id)}`, 'aria-label': `${video.title}, ${areaName}, ${len}` },
+    videoThumb(video, { areaName, speed: reelSpeedOf(state) }));
 }
 
 /* ---------- Learn home ---------- */
@@ -105,7 +102,7 @@ function renderHome(el, ctx) {
   const vids = [...VIDEOS].sort((a, b) => areaIdx(a.area) - areaIdx(b.area));
   const shelf = vids.length ? [
     h('h2', { class: 'gh' }, 'Watch'),
-    h('div', { class: 'shelf', role: 'list' }, vids.map(v => { const c = videoCard(v, areaName(v.area)); c.setAttribute('role', 'listitem'); return c; })),
+    h('div', { class: 'shelf', role: 'list' }, vids.map(v => { const c = videoCard(v, areaName(v.area), state); c.setAttribute('role', 'listitem'); return c; })),
   ] : [];
 
   const areaRows = AREAS.map(a => {
@@ -175,7 +172,7 @@ function renderArea(el, ctx, areaId) {
   }
   if (videos.length) {
     el.append(h('h2', { class: 'gh' }, 'Video lessons'), h('div', { class: 'group' }, videos.map(v =>
-      row(`#/watch/${encodeURIComponent(v.id)}`, ico('video'), v.title, `${videoMinutes(v)} min`))));
+      row(`#/watch/${encodeURIComponent(v.id)}`, ico('video'), v.title, videoLength(v, state)))));
   }
   const pis = PIS.filter(p => p.area === area.id && QUESTIONS.some(q => q.pi === p.code)).map(p => p.code);
   if (pis.length) {

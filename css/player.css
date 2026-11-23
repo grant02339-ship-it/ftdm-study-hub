@@ -26,9 +26,11 @@
   .sheet:has(.rf) .sheet-close{top:0;right:8px;background:rgba(255,255,255,.12)}
 }
 
-.rf{
+.rf, .rt{
   --st-bg:#0B0A09; --st-fill:#1C1A18; --st-raised:#2A2724; --st-text:#F5EFE6; --st-text2:#A39B91;
   --st-orange:#F07A34; --st-on-orange:#1A0E06; --st-sep:rgba(245,239,230,.1);
+}
+.rf{
   position:relative;height:100%;display:flex;justify-content:center;
 }
 .rf-frame{position:relative;height:100%;width:100%;overflow:hidden;background:var(--st-bg)}
@@ -308,3 +310,6 @@
 .rf-sound svg{width:19px;height:19px;color:var(--st-orange)}
 .rf-sound[hidden]{display:none}
 .rf-sound:focus-visible{outline:2px solid var(--st-orange);outline-offset:2px}
+
+/* Thumbnails reuse the scene styles at rest: no compositing hints for dozens of static frames. */
+.rt-stage, .rt-stage *{will-change:auto !important}

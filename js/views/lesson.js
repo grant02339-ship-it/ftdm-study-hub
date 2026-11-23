@@ -1,6 +1,7 @@
 // Lesson sheet (#/lesson/:id): title, PI chips, sections, explainer, key terms, exam traps, video, practice.
 import { h, icon } from '../ui.js';
-import { quizHref, videoMinutes } from './learn.js';
+import { quizHref, videoLength, reelSpeedOf } from './learn.js';
+import { videoThumb } from '../reel-thumb.js';
 
 const LEVELS = { PQ: 'Prerequisite', CS: 'Career-sustaining', SP: 'Specialist' };
 const EXPLAINERS = {
@@ -103,9 +104,9 @@ export function render(el, params, ctx) {
 
   if (video) {
     parts.push(h('div', { class: 'group lesson-video' },
-      h('a', { class: 'row', href: `#/watch/${encodeURIComponent(video.id)}` },
-        h('div', { class: 'ico' }, icon('play')),
-        h('div', { class: 't' }, 'Watch the video lesson', h('small', null, `${video.title} · ${videoMinutes(video)} min`)),
+      h('a', { class: 'row row-video', href: `#/watch/${encodeURIComponent(video.id)}` },
+        videoThumb(video, { areaName: area ? area.name : '', speed: reelSpeedOf(ctx.state), variant: 'mini' }),
+        h('div', { class: 't' }, 'Watch the video lesson', h('small', null, `${video.title} · ${videoLength(video, ctx.state)}`)),
         h('span', { class: 'chev', 'aria-hidden': 'true' }, icon('chevron')))));
   }
 
