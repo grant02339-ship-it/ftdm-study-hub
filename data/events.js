@@ -1,5 +1,5 @@
 // Competitive events and the career-cluster exam each one is built on.
-// Finance reuses areas.js; Marketing and Hospitality carry their own areas + blueprint (research_notes/DECA <cluster> cluster exam).
+// Finance reuses areas.js; Marketing, Hospitality and Entrepreneurship carry their own areas + blueprint (research_notes/DECA <cluster> cluster exam).
 import { AREAS, BLUEPRINT } from './areas.js';
 
 export const EVENTS = [
@@ -9,11 +9,13 @@ export const EVENTS = [
   { id: 'mtdm', name: 'Marketing Management Team Decision Making', short: 'Marketing Management', cluster: 'marketing' },
   { id: 'htdm', name: 'Hospitality Services Team Decision Making', short: 'Hospitality Services', cluster: 'hospitality' },
   { id: 'ttdm', name: 'Travel and Tourism Team Decision Making', short: 'Travel & Tourism', cluster: 'hospitality' },
+  { id: 'etdm', name: 'Entrepreneurship Team Decision Making', short: 'Entrepreneurship', cluster: 'entrepreneurship' },
   { id: 'pbm', name: 'Principles of Business Management and Administration', short: 'Principles of Business Management', cluster: 'core', group: 'principles' },
   { id: 'pen', name: 'Principles of Entrepreneurship', short: 'Principles of Entrepreneurship', cluster: 'core', group: 'principles' },
   { id: 'pfn', name: 'Principles of Finance', short: 'Principles of Finance', cluster: 'core', group: 'principles' },
   { id: 'pht', name: 'Principles of Hospitality and Tourism', short: 'Principles of Hospitality & Tourism', cluster: 'core', group: 'principles' },
   { id: 'pmk', name: 'Principles of Marketing', short: 'Principles of Marketing', cluster: 'core', group: 'principles' },
+  { id: 'ent', name: 'Entrepreneurship Series', short: 'Entrepreneurship Series', cluster: 'entrepreneurship', group: 'series' },
 ];
 export const DEFAULT_EVENT = 'ftdm';
 
@@ -86,6 +88,35 @@ export const CLUSTERS = {
       QM: { district: 1, association: 1, icdc: 1 },
       EN: { district: 1, association: 0, icdc: 0 },
       KM: { district: 0, association: 1, icdc: 1 },
+    },
+  },
+  entrepreneurship: {
+    name: 'Entrepreneurship',
+    areas: ['EN', 'OP', 'FI', 'SM', 'PR', 'EI', 'MP', 'PD', 'HR', 'PM', 'BL', 'NF', 'CM', 'EC', 'RM', 'IM', 'PI', 'CR', 'MK', 'QM', 'SE', 'CO'],
+    names: { EN: 'Entrepreneurship', OP: 'Operations', FI: 'Financial analysis', SM: 'Strategic management', PR: 'Promotion', EI: 'Emotional intelligence', MP: 'Market planning', PD: 'Professional development', HR: 'Human resources management', PM: 'Product/service management', BL: 'Business law', NF: 'Information management', CM: 'Channel management', EC: 'Economics', RM: 'Risk management', IM: 'Marketing-information management', PI: 'Pricing', CR: 'Customer relations', MK: 'Marketing', QM: 'Quality management', SE: 'Selling', CO: 'Communications' },
+    blueprint: {
+      EN: { district: 14, association: 13, icdc: 14 },
+      OP: { district: 13, association: 13, icdc: 14 },
+      FI: { district: 10, association: 9, icdc: 11 },
+      SM: { district: 7, association: 7, icdc: 8 },
+      PR: { district: 6, association: 7, icdc: 8 },
+      EI: { district: 6, association: 6, icdc: 4 },
+      MP: { district: 5, association: 6, icdc: 6 },
+      PD: { district: 5, association: 5, icdc: 4 },
+      HR: { district: 5, association: 4, icdc: 4 },
+      PM: { district: 4, association: 4, icdc: 4 },
+      BL: { district: 4, association: 4, icdc: 3 },
+      NF: { district: 4, association: 3, icdc: 2 },
+      CM: { district: 3, association: 3, icdc: 3 },
+      EC: { district: 3, association: 3, icdc: 2 },
+      RM: { district: 2, association: 3, icdc: 4 },
+      IM: { district: 2, association: 3, icdc: 2 },
+      PI: { district: 2, association: 3, icdc: 2 },
+      CR: { district: 1, association: 1, icdc: 1 },
+      MK: { district: 1, association: 1, icdc: 1 },
+      QM: { district: 1, association: 1, icdc: 1 },
+      SE: { district: 1, association: 1, icdc: 1 },
+      CO: { district: 1, association: 0, icdc: 1 },
     },
   },
   core: {

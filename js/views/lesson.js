@@ -3,7 +3,7 @@ import { h, icon } from '../ui.js';
 import { quizHref, videoLength, reelSpeedOf } from './learn.js';
 import { videoThumb } from '../reel-thumb.js';
 
-const LEVELS = { PQ: 'Prerequisite', CS: 'Career-sustaining', SP: 'Specialist' };
+const LEVELS = { PQ: 'Prerequisite', CS: 'Career-sustaining', SP: 'Specialist', SU: 'Supervisor', MN: 'Manager', ON: 'Owner' };
 const EXPLAINERS = {
   tvm: 'Time value of money', ratios: 'Financial ratios', breakeven: 'Break-even point',
   loan: 'Loan payments', bond: 'Bond prices', supplydemand: 'Supply and demand',

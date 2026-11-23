@@ -1537,5 +1537,395 @@ export default {
    "audio": "media/v-htm-hospitality-careers-7.m4a",
    "dur": 6
   }
+ ],
+ "v-ens-opportunity": [
+  {
+   "audio": "media/v-ens-opportunity-0.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ens-opportunity-1.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-ens-opportunity-2.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ens-opportunity-3.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-ens-opportunity-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ens-opportunity-5.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ens-opportunity-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ens-opportunity-7.m4a",
+   "dur": 4
+  }
+ ],
+ "v-ens-plan": [
+  {
+   "audio": "media/v-ens-plan-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-ens-plan-1.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-ens-plan-2.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-ens-plan-3.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-ens-plan-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ens-plan-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ens-plan-6.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ens-plan-7.m4a",
+   "dur": 6
+  }
+ ],
+ "v-ens-exit": [
+  {
+   "audio": "media/v-ens-exit-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-ens-exit-1.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ens-exit-2.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-ens-exit-3.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ens-exit-4.m4a",
+   "dur": 9
+  },
+  {
+   "audio": "media/v-ens-exit-5.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ens-exit-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ens-exit-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-enf-funding": [
+  {
+   "audio": "media/v-enf-funding-0.m4a",
+   "dur": 3
+  },
+  {
+   "audio": "media/v-enf-funding-1.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-enf-funding-2.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-enf-funding-3.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-enf-funding-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-enf-funding-5.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-enf-funding-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enf-funding-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-enf-breakeven": [
+  {
+   "audio": "media/v-enf-breakeven-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-enf-breakeven-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enf-breakeven-2.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-enf-breakeven-3.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enf-breakeven-4.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-enf-breakeven-5.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-enf-breakeven-6.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-enf-breakeven-7.m4a",
+   "dur": 6
+  }
+ ],
+ "v-eno-day-to-day": [
+  {
+   "audio": "media/v-eno-day-to-day-0.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-eno-day-to-day-1.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-eno-day-to-day-2.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-eno-day-to-day-3.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-eno-day-to-day-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-eno-day-to-day-5.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-eno-day-to-day-6.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-eno-day-to-day-7.m4a",
+   "dur": 10
+  },
+  {
+   "audio": "media/v-eno-day-to-day-8.m4a",
+   "dur": 5
+  }
+ ],
+ "v-eno-hire-lead": [
+  {
+   "audio": "media/v-eno-hire-lead-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-eno-hire-lead-1.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-eno-hire-lead-2.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-eno-hire-lead-3.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-eno-hire-lead-4.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-eno-hire-lead-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-eno-hire-lead-6.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-eno-hire-lead-7.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-eno-hire-lead-8.m4a",
+   "dur": 5
+  }
+ ],
+ "v-ent-strategic-planning": [
+  {
+   "audio": "media/v-ent-strategic-planning-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-2.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-3.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-6.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-7.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-strategic-planning-8.m4a",
+   "dur": 7
+  }
+ ],
+ "v-ent-legal-forms": [
+  {
+   "audio": "media/v-ent-legal-forms-0.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-ent-legal-forms-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-legal-forms-2.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-ent-legal-forms-3.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-legal-forms-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-legal-forms-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ent-legal-forms-6.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-ent-legal-forms-7.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-ent-legal-forms-8.m4a",
+   "dur": 7
+  }
+ ],
+ "v-enm-target-market": [
+  {
+   "audio": "media/v-enm-target-market-0.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-enm-target-market-1.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-enm-target-market-2.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enm-target-market-3.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enm-target-market-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enm-target-market-5.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-enm-target-market-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enm-target-market-7.m4a",
+   "dur": 6
+  }
+ ],
+ "v-enm-new-offering": [
+  {
+   "audio": "media/v-enm-new-offering-0.m4a",
+   "dur": 3
+  },
+  {
+   "audio": "media/v-enm-new-offering-1.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-enm-new-offering-2.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-enm-new-offering-3.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-enm-new-offering-4.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-enm-new-offering-5.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-enm-new-offering-6.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-enm-new-offering-7.m4a",
+   "dur": 6
+  }
  ]
 };

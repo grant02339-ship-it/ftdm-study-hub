@@ -14,8 +14,10 @@ const BLURB = {
   pfn: 'Business core: money, financial analysis and economics.',
   pht: 'Business core for hotels, restaurants and travel.',
   pmk: 'Business core: customers, communication and marketing basics.',
+  etdm: 'Start-ups, small business strategy, finance and promotion.',
+  ent: 'Owning and running a small business.',
 };
-const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP', htdm: 'CR', ttdm: 'MP', pbm: 'OP', pen: 'EN', pfn: 'FI', pht: 'CR', pmk: 'MK' };
+const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP', htdm: 'CR', ttdm: 'MP', pbm: 'OP', pen: 'EN', pfn: 'FI', pht: 'CR', pmk: 'MK', etdm: 'EN', ent: 'EN' };
 
 function checkMark() {
   const t = document.createElement('template');
@@ -24,7 +26,7 @@ function checkMark() {
 }
 
 // One big rounded card per event. selectedId marks the current one (Settings); onPick(event) fires on tap.
-const GROUP_LABEL = { tdm: 'Team decision making', principles: 'Principles (first-year members)' };
+const GROUP_LABEL = { tdm: 'Team decision making', principles: 'Principles (first-year members)', series: 'Individual series' };
 
 function eventCards(selectedId, onPick) {
   let lastGroup = null;
