@@ -1,9 +1,9 @@
 // Boot, hash router, theme, nav state, large-title collapse.
 // Adding a screen = creating js/views/<name>.js that exports render(el, params, ctx).
 import * as data from '../data/index.js';
-import { loadState, saveState, isFirstLaunch } from './store.js';
+import { loadState, saveState, isFirstLaunch, needsEventPrompt } from './store.js';
 import { currentEvent, eventData, setEvent } from './event.js';
-import { showEventPicker } from './picker.js';
+import { showEventPicker, openEventAnnouncement, switchEvent } from './picker.js';
 import { h, icon, brandMark, applyTheme, openSheet, placeholder } from './ui.js';
 import { initOffline, routeChanged } from './offline.js';
 
@@ -41,12 +41,15 @@ export function parseHash(hash) {
 
 /* ---------- Context shared with views ---------- */
 const firstLaunch = isFirstLaunch();
+const prompt = needsEventPrompt(loadState());
 const ctx = {
   state: loadState(),
   // The content slice for the student's chosen event (areas, blueprint, lessons, questions, cards, videos).
   get data() { return eventData(currentEvent(ctx.state)); },
   allData: data,
   setEvent(id) { setEvent(ctx.state, id); return ctx.save(); },
+  // Event switch with the mock-exam confirmation; done() runs after the event actually changes.
+  switchEvent(picked, done) { switchEvent(ctx, picked, done); },
   save() { return saveState(ctx.state); },
   go(hash) { location.hash = hash; },
   applyTheme,
@@ -64,7 +67,7 @@ function buildNav() {
     tabbar.append(h('a', { class: 'tab', href: `#/${id}`, dataset: { tab: id } }, icon(id), h('span', null, label)));
   }
   sidebar.append(
-    h('div', { class: 'brand' }, brandMark(), h('span', null, 'FTDM Study Hub')),
+    h('div', { class: 'brand' }, brandMark(), h('span', null, 'DECA Study Buddy')),
     ...NAV.map(([id, label]) => h('a', { class: 'side-link', href: `#/${id}`, dataset: { tab: id } }, icon(id), h('span', null, label))),
     h('div', { class: 'side-sep', role: 'separator' }),
     h('a', { class: 'side-link', href: '#/settings', dataset: { tab: 'settings' } }, icon('settings'), h('span', null, 'Settings')),
@@ -134,7 +137,7 @@ async function renderPage(r, { keepScroll = false } = {}) {
   base = { key: r.key, name: r.name };
   const title = (page.querySelector('.lt') || {}).textContent || r.def.title;
   topTitle.textContent = title;
-  document.title = r.name === 'home' ? 'FTDM Study Hub' : `${title} · FTDM Study Hub`;
+  document.title = r.name === 'home' ? 'DECA Study Buddy' : `${title} · DECA Study Buddy`;
   setActiveNav(r.def.tab);
   window.scrollTo(0, keepScroll ? y : 0);
   syncScrolled();
@@ -200,8 +203,13 @@ buildNav();
 if (!location.hash || location.hash === '#' || location.hash === '#/') history.replaceState(null, '', '#/home');
 window.addEventListener('hashchange', route);
 // A brand-new student picks their event before seeing Home.
-if (firstLaunch) showEventPicker(ev => { ctx.setEvent(ev.id); route(); });
-else route();
+if (firstLaunch) showEventPicker(ev => { ctx.state.settings.seenEventPrompt = 1; ctx.setEvent(ev.id); route(); });
+else {
+  route().then(() => {
+    // Existing students see the event sheet once, after Home has drawn.
+    if (prompt) openEventAnnouncement(ctx, () => route());
+  });
+}
 
 /* ---------- Offline support ---------- */
 // One-time, unobtrusive confirmation that everything is saved for offline use.

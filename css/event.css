@@ -8,7 +8,7 @@
 .ev-welcome.in{opacity:1;transform:none}
 .ev-welcome.out{opacity:0;transform:scale(1.02);pointer-events:none;transition:opacity .28s ease, transform .28s ease}
 .ev-welcome-in{width:100%;max-width:520px;margin:auto;padding:24px 0}
-.ev-brand svg{width:64px;height:64px;border-radius:16px;margin:0 0 28px;box-shadow:0 10px 30px -8px rgba(240,122,52,.45)}
+.ev-brand img{width:64px;height:64px;border-radius:16px;margin:0 0 28px;box-shadow:0 10px 30px -8px rgba(240,122,52,.45)}
 .ev-h{font:700 36px/1.08 var(--round);letter-spacing:-.025em}
 .ev-lede{color:var(--text2);font-size:17px;margin:10px 0 28px;max-width:34ch}
 .ev-list{display:grid;gap:14px}
@@ -40,3 +40,19 @@
 .ev-tag{color:var(--text2);font-weight:600}
 .ev-tag-link{color:inherit}
 @media (prefers-reduced-motion: reduce){.ev-welcome,.ev-welcome.out,.ev-card{transition:none}}
+
+/* Event chip (Home, Learn) and the one-time announcement. */
+.ev-chip{
+  display:inline-flex;align-items:center;gap:6px;max-width:100%;min-height:32px;padding:5px 8px 5px 12px;
+  border-radius:var(--r-pill);background:var(--orange-dim);color:var(--orange);font:600 14px/1.2 var(--round);
+  vertical-align:middle;transition:transform .2s var(--spring), filter .2s ease;
+}
+.ev-chip>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev-chip:active{transform:scale(.96)}
+@media (hover:hover){.ev-chip:hover{filter:brightness(1.1)}}
+.ev-chip-chev{flex:none;display:grid;place-items:center}
+.ev-chip-chev svg{width:7px;height:12px;transform:rotate(90deg)}
+.sub-chip{margin:2px 4px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--text2);font-size:15px}
+.sub-chip a{color:var(--orange);font-weight:600}
+.ev-eyebrow{display:inline-block;margin:0 0 8px 4px;padding:3px 10px;border-radius:var(--r-pill);background:var(--orange);color:var(--on-orange);font:700 12px/1.4 var(--round);letter-spacing:.02em}
+.ev-new .cta{margin-top:20px}

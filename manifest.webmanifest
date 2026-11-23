@@ -1,6 +1,6 @@
 {
-  "name": "FTDM Study Hub",
-  "short_name": "FTDM",
+  "name": "DECA Study Buddy",
+  "short_name": "Study Buddy",
   "description": "Study for the DECA Financial Services Team Decision Making exam, offline.",
   "id": "./",
   "start_url": "./#/home",

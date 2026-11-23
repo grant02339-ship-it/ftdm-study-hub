@@ -3,6 +3,7 @@ import { h, icon, reducedMotion } from '../ui.js';
 import { readiness, weakest, areaMastery } from '../progress.js';
 import { dueCards } from '../srs.js';
 import { examEvent } from '../event.js';
+import { eventChip } from '../picker.js';
 
 const LEVEL = {
   district: { exam: 'district', meet: 'Districts' },
@@ -123,7 +124,8 @@ export function render(el, params, ctx) {
     h('a', { class: 'icon-btn only-phone', href: '#/settings', 'aria-label': 'Settings' }, icon('settings')));
 
   const cd = countdown(state.settings.confDate, level, today);
-  const sub = h('p', { class: 'sub' }, h('span', { class: 'ev-tag' }, data.EVENT.short), ' · ',
+  const rerender = () => { el.replaceChildren(); render(el, params, ctx); };
+  const sub = h('div', { class: 'sub-chip' }, eventChip(ctx, rerender),
     cd || h('a', { href: '#/settings' }, 'Set your conference date'));
 
   // Ring + stats

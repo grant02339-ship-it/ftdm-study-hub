@@ -1,6 +1,6 @@
 // Event picker: the full-screen "Choose your event" welcome (first launch) and the Settings sheet.
 import { h, icon, brandMark, openSheet } from './ui.js';
-import { EVENTS, currentEvent } from './event.js';
+import { EVENTS, currentEvent, examEvent } from './event.js';
 
 const BLURB = {
   ftdm: 'Banking, investing, insurance and financial analysis.',
@@ -58,4 +58,61 @@ export function openEventSheet(state, onPick) {
     h('div', { class: 'ev-list' }, eventCards(currentEvent(state).id, ev => { close(); onPick(ev); })));
   close = openSheet(content, { label: 'Choose your event' });
   return close;
+}
+
+// Confirmation before a switch would end a mock exam in progress.
+function confirmSwitch(done) {
+  let close = null;
+  const yes = h('button', { class: 'cta st-reset-yes', type: 'button', onclick: () => { close(); done(); } }, 'Switch event');
+  const no = h('button', { class: 'btn-2', type: 'button', onclick: () => close() }, 'Keep my exam');
+  const content = h('div', { class: 'st-confirm' },
+    h('div', { class: 'st-confirm-ico' }, icon('alert')),
+    h('h2', { class: 'lt' }, 'Switch events?'),
+    h('p', null, 'Switching events ends your mock exam in progress. Your answers and flashcards are kept.'),
+    yes, no);
+  const onHash = () => close();
+  close = openSheet(content, { label: 'Switch events', onClose: () => window.removeEventListener('hashchange', onHash) });
+  window.addEventListener('hashchange', onHash);
+  setTimeout(() => no.focus({ preventScroll: true }), 50);
+}
+
+// Applies a picked event (Settings, Home and Learn chips, the announcement). Asks first when a mock exam
+// in progress would be dropped. done() runs after the choice is settled, changed or not.
+export function switchEvent(ctx, picked, done) {
+  const cur = currentEvent(ctx.state);
+  if (picked.id === cur.id) { if (done) done(); return; }
+  const apply = () => { ctx.setEvent(picked.id); if (done) done(); };
+  if (ctx.state.activeExam && examEvent(ctx.state.activeExam) !== picked.id) confirmSwitch(apply);
+  else apply();
+}
+
+// One-time "New: choose your event" sheet for existing students. Marks it seen as soon as it opens.
+export function openEventAnnouncement(ctx, onDone) {
+  ctx.state.settings.seenEventPrompt = 1;
+  ctx.save();
+  let chosen = currentEvent(ctx.state).id;
+  let close = null;
+  const list = h('div', { class: 'ev-list' });
+  const paint = () => list.replaceChildren(...eventCards(chosen, ev => { chosen = ev.id; paint(); }));
+  paint();
+  const go = h('button', { class: 'cta', type: 'button', onclick: () => {
+    const picked = EVENTS.find(e => e.id === chosen);
+    close();
+    switchEvent(ctx, picked, onDone);
+  } }, 'Continue');
+  const content = h('div', { class: 'ev-sheet ev-new' },
+    h('p', { class: 'ev-eyebrow' }, 'New'),
+    h('h2', { class: 'lt' }, 'New: choose your event'),
+    h('p', { class: 'sub' }, 'Lessons, practice and mock exams now follow your event. Your answers are kept if you switch. You can change it anytime from Home, Learn or Settings.'),
+    list, go);
+  close = openSheet(content, { label: 'New: choose your event' });
+  return close;
+}
+
+// Small tappable chip with the event name and a chevron; opens the event sheet.
+export function eventChip(ctx, onChanged) {
+  return h('button', { class: 'ev-chip', type: 'button', 'aria-haspopup': 'dialog',
+    'aria-label': `Event: ${currentEvent(ctx.state).short}. Change event`,
+    onclick: () => openEventSheet(ctx.state, picked => switchEvent(ctx, picked, onChanged)) },
+  h('span', null, currentEvent(ctx.state).short), h('span', { class: 'ev-chip-chev', 'aria-hidden': 'true' }, icon('chevron')));
 }

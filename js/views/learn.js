@@ -4,6 +4,7 @@ import { h, icon } from '../ui.js';
 import { areaMastery } from '../progress.js';
 import { videoThumb } from '../reel-thumb.js';
 import { videoClock, snapSpeed } from '../player-timeline.js';
+import { eventChip } from '../picker.js';
 
 export const LEVEL_NAME = { district: 'District', association: 'Association', icdc: 'ICDC' };
 const levelOf = state => (LEVEL_NAME[state.settings.level] ? state.settings.level : 'district');
@@ -69,7 +70,7 @@ function masteryMeter(m) {
 
 export function lessonRow(lesson, sub) {
   const star = !!lesson.caseFrequent;
-  const subtitle = sub || (star ? `Often in FTDM cases · ${lesson.minutes} min` : `${lesson.minutes} min · ${plural(lesson.pis.length, 'PI')}`);
+  const subtitle = sub || (star ? `Often in case studies · ${lesson.minutes} min` : `${lesson.minutes} min · ${plural(lesson.pis.length, 'PI')}`);
   return row(`#/lesson/${encodeURIComponent(lesson.id)}`, ico(star ? 'star' : 'lesson', star ? 'star' : ''),
     star ? h('span', null, h('span', { class: 'sr-only' }, 'Starred: '), lesson.title) : lesson.title, subtitle);
 }
@@ -139,7 +140,7 @@ function renderHome(el, ctx) {
   input.addEventListener('keydown', e => { if (e.key === 'Escape' && input.value) { e.stopPropagation(); input.value = ''; paint(); } });
   clear.addEventListener('click', () => { input.value = ''; paint(); input.focus(); });
 
-  el.append(h('h1', { class: 'lt' }, 'Learn'), h('p', { class: 'sub ev-tag' }, data.EVENT.short), search, results, browse);
+  el.append(h('h1', { class: 'lt' }, 'Learn'), h('div', { class: 'sub-chip' }, eventChip(ctx, () => { el.replaceChildren(); renderHome(el, ctx); })), search, results, browse);
   paint();
 }
 

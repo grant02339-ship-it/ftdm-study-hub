@@ -78,14 +78,14 @@ export function icon(name) {
   return svg;
 }
 
-// Brand glyph (same drawing as icons/icon.svg) for the sidebar.
+// Brand mark: the Study Buddy mascot (icons/icon.svg), rounded like an app icon.
 export function brandMark() {
-  return fromMarkup(`<svg viewBox="0 0 64 64" aria-hidden="true">
-    <rect width="64" height="64" rx="14" fill="#000"/>
-    <circle cx="32" cy="32" r="19" fill="none" stroke="rgba(240,122,52,.22)" stroke-width="6"/>
-    <path d="M32 13a19 19 0 1 1-19 19" fill="none" stroke="#F07A34" stroke-width="6" stroke-linecap="round"/>
-    <path d="M23 37l6-6 4 4 8-8" fill="none" stroke="#F07A34" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`);
+  const img = document.createElement('img');
+  img.src = 'icons/icon.svg';
+  img.alt = '';
+  img.setAttribute('aria-hidden', 'true');
+  img.style.display = 'block';
+  return img;
 }
 
 export const reducedMotion = () =>

@@ -1,7 +1,7 @@
 // Progress state: load/save (never throws), record answers, export/import backups.
 import { EVENTS, DEFAULT_EVENT } from '../data/events.js';
 export const STORAGE_KEY = 'ftdm.v1';
-export const BAD_BACKUP = "That file isn't an FTDM Study Hub backup.";
+export const BAD_BACKUP = "That file isn't a DECA Study Buddy backup.";
 
 export function defaultState() {
   return {
@@ -10,7 +10,7 @@ export function defaultState() {
     cards: {},     // cid -> {box, due}
     exams: [],     // [{date, level, score, byArea}]
     activeExam: null,
-    settings: { event: DEFAULT_EVENT, level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25 },
+    settings: { event: DEFAULT_EVENT, level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25, seenEventPrompt: 0 },
     streak: { count: 0, lastDay: null },
   };
 }
@@ -72,6 +72,7 @@ function fixSettings(s) {
     theme: THEMES.includes(s.theme) ? s.theme : d.theme,
     narrate: typeof s.narrate === 'boolean' ? s.narrate : d.narrate,
     reelSpeed: fin(s.reelSpeed) && s.reelSpeed >= 0.75 && s.reelSpeed <= 2 ? s.reelSpeed : d.reelSpeed,
+    seenEventPrompt: s.seenEventPrompt === 1 || s.seenEventPrompt === true ? 1 : 0,
   };
   if (typeof s.confName === 'string') out.confName = s.confName.slice(0, 60);
   return out;
@@ -99,6 +100,12 @@ function normalize(raw) {
 export function isFirstLaunch(storage) {
   try { return (storage ?? globalThis.localStorage).getItem(STORAGE_KEY) == null; }
   catch (e) { return false; }
+}
+
+// True when saved state exists but the student has not yet seen the "choose your event" sheet.
+export function needsEventPrompt(state, storage) {
+  if (isFirstLaunch(storage)) return false;
+  return !(state && state.settings && state.settings.seenEventPrompt === 1);
 }
 
 export function loadState(storage) {

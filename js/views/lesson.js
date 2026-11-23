@@ -69,7 +69,7 @@ export function render(el, params, ctx) {
   const head = h('header', { class: 'lesson-head' },
     area ? h('a', { class: 'eyebrow', href: `#/learn/${encodeURIComponent(area.id)}` }, area.name) : null,
     h('h1', { class: 'lt lesson-title' }, lesson.title),
-    lesson.caseFrequent ? h('p', { class: 'badge-case' }, icon('star'), 'Often in FTDM cases') : null,
+    lesson.caseFrequent ? h('p', { class: 'badge-case' }, icon('star'), 'Often in case studies') : null,
     h('div', { class: 'lesson-meta' },
       h('span', { class: 'chip quiet' }, h('span', { class: 'num' }, String(lesson.minutes)), 'min read'),
       chips),
