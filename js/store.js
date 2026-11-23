@@ -7,7 +7,7 @@ export function defaultState() {
   return {
     v: 1,
     answers: {},   // qid -> {n, correct, last (bool, latest attempt), at (ms)}
-    cards: {},     // cid -> {box, due}
+    cards: {},     // cid -> {known, seen, last (ms)}
     exams: [],     // [{date, level, score, byArea}]
     activeExam: null,
     settings: { event: DEFAULT_EVENT, level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25, seenEventPrompt: 0 },
@@ -39,7 +39,12 @@ const fixAnswer = a => {
   const n = nat(a.n);
   return { n, correct: Math.min(n, nat(a.correct)), last: a.last === true, at: fin(a.at) ? a.at : 0 };
 };
-const fixCard = c => (isObj(c) ? { box: Math.min(5, nat(c.box)), due: fin(c.due) ? c.due : 0 } : null);
+// {known, seen, last}. Old Leitner entries {box, due} migrate: box >= 2 counts as known.
+const fixCard = c => {
+  if (!isObj(c)) return null;
+  const known = typeof c.known === 'boolean' ? c.known : nat(c.box) >= 2;
+  return { known, seen: nat(c.seen), last: fin(c.last) && c.last >= 0 ? c.last : 0 };
+};
 const fixArea = s => (isObj(s) && fin(s.correct) && fin(s.total) ? { correct: s.correct, total: s.total } : null);
 const strArr = v => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : []);
 

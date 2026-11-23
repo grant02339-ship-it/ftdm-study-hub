@@ -1,7 +1,7 @@
-// Home: readiness ring, last mock + streak, conference countdown, study next, cards due, mock exam.
+// Home: readiness ring, last mock + streak, conference countdown, study next, flashcards, mock exam.
 import { h, icon, reducedMotion } from '../ui.js';
 import { readiness, weakest, areaMastery } from '../progress.js';
-import { dueCards } from '../srs.js';
+import { unknownCards } from '../deck.js';
 import { examEvent } from '../event.js';
 import { eventChip } from '../picker.js';
 
@@ -156,12 +156,12 @@ export function render(el, params, ctx) {
     return row(`#/learn/${encodeURIComponent(id)}`, id, nameOf(id), sub, bar);
   });
 
-  // Cards due
-  const due = dueCards(CARDS, state, Date.now()).length;
+  // Flashcards: how many are still to learn
+  const toLearn = unknownCards(CARDS, state).length;
   const cardSub = !CARDS.length ? 'No flashcards yet'
-    : due ? 'Review them to keep them fresh' : 'You’re all caught up';
-  const cardsRow = row('#/cards', 'cards', 'Cards due', cardSub,
-    h('span', { class: `val${due ? ' hot' : ''}` }, String(due)));
+    : toLearn ? `${toLearn} to learn` : 'You know them all. Keep them fresh';
+  const cardsRow = row('#/cards', 'cards', 'Study flashcards', cardSub,
+    h('span', { class: `val${toLearn ? ' hot' : ''}` }, String(toLearn)));
 
   // Mock exam
   const resume = !!state.activeExam;
