@@ -221,6 +221,7 @@ function toast(text) {
 }
 initOffline({
   // Updates apply only on Home with no sheet open (never mid-exam, quiz or reel).
-  safe: () => !sheet && !!base && base.name === 'home' && parseHash(location.hash).name === 'home',
+  // Safe to reload into an update: no lesson/quiz/reel sheet open and not in a mock exam.
+  safe: () => !sheet && parseHash(location.hash).name !== 'exam',
   onFirstReady: () => toast('Ready to use offline'),
 });

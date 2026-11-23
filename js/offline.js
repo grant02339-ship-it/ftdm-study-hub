@@ -33,6 +33,10 @@ export function offlineLabel(s = status) {
 // safe moment: when the student is on Home with nothing open, never mid-exam, quiz or reel.
 let isSafe = () => false;
 let reloading = false;
+let pendingReload = false;
+function reloadIfSafe() {
+  if (pendingReload && !reloading && isSafe()) { reloading = true; location.reload(); }
+}
 
 function applyUpdateIfSafe() {
   if (reg && reg.waiting && navigator.serviceWorker.controller && isSafe()) {
@@ -40,7 +44,26 @@ function applyUpdateIfSafe() {
   }
 }
 // app.js calls this after each route change.
-export function routeChanged() { applyUpdateIfSafe(); }
+export function routeChanged() { reloadIfSafe(); applyUpdateIfSafe(); }
+
+// iPhone keeps home-screen apps paused in the background instead of relaunching them,
+// so look for a new version whenever the app comes back to the front, and every 30 minutes.
+let lastCheck = 0;
+export async function checkForUpdate(force = false) {
+  if (!reg) return false;
+  const now = Date.now();
+  if (!force && now - lastCheck < 60000) return !!reg.waiting;
+  lastCheck = now;
+  try { await reg.update(); } catch (e) { console.warn('Update check failed', e); }
+  applyUpdateIfSafe();
+  return !!(reg.waiting || reg.installing);
+}
+// Settings "Update now": apply a downloaded update immediately.
+export function updateNow() {
+  if (reg && reg.waiting) { reg.waiting.postMessage({ type: 'skip-waiting' }); return true; }
+  return false;
+}
+export const updateWaiting = () => !!(reg && reg.waiting);
 
 function scheduleRetry() {
   clearTimeout(retryTimer);
@@ -60,7 +83,7 @@ function watch(worker) {
 
 async function register() {
   try {
-    reg = await navigator.serviceWorker.register('./sw.js');
+    reg = await navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' });
   } catch (e) {
     console.warn('Service worker failed to register', e);
     scheduleRetry();
@@ -90,14 +113,18 @@ export function initOffline({ safe, onFirstReady }) {
   });
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (hadController) {
-      // An update was applied at a safe moment (see applyUpdateIfSafe): load it fully.
-      if (!reloading) { reloading = true; location.reload(); }
+      // A new version took over: reload into it now, or as soon as the student
+      // finishes the exam, quiz or reel they are in.
+      pendingReload = true;
+      reloadIfSafe();
       return;
     }
     set({ state: 'ready' });
     if (onFirstReady) onFirstReady();
   });
-  window.addEventListener('online', () => { if (status.state === 'retry') register(); });
+  window.addEventListener('online', () => { if (status.state === 'retry') register(); else checkForUpdate(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { reloadIfSafe(); checkForUpdate(); } });
+  setInterval(() => checkForUpdate(), 30 * 60 * 1000);
   // Registered after load so it never competes with the first render.
   if (document.readyState === 'complete') register();
   else window.addEventListener('load', register, { once: true });

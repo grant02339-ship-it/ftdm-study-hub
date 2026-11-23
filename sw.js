@@ -1,7 +1,7 @@
 // Cache-first service worker. The precache list is generated: run
 // `python3 scripts/build_precache.py` after changing any file under app/.
 /*PRECACHE_START*/
-const VERSION = "f97c0b86e3b4";
+const VERSION = "33b2d485ea61";
 const PRECACHE = [
   "./index.html",
   "./css/app.css",
@@ -106,6 +106,7 @@ const PRECACHE = [
   "./js/srs.js",
   "./js/store.js",
   "./js/ui.js",
+  "./js/version.js",
   "./js/views/cards.js",
   "./js/views/exam.js",
   "./js/views/home.js",
@@ -462,9 +463,9 @@ self.addEventListener('install', (event) => {
       throw new Error('[sw] precache incomplete: ' + failed.length + ' file(s) failed');
     }
     await tell({ type: 'precache-done', total: PRECACHE.length });
-    // First install takes over at once. An update waits until the page says it's safe
-    // (app.js sends 'skip-waiting' on Home), so a running page never mixes versions.
-    if (!self.registration.active) await self.skipWaiting();
+    // Take over right away; the page reloads itself into the new version at the next
+    // moment it is not mid-exam, mid-quiz or mid-reel (see js/offline.js).
+    await self.skipWaiting();
   })());
 });
 

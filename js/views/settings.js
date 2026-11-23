@@ -5,7 +5,8 @@ import { saveState, exportState, importState, defaultState, BAD_BACKUP } from '.
 import { LEVEL_NAME } from './learn.js';
 import { levelOf, ymd } from '../practice-lib.js';
 import { openEventSheet } from '../picker.js';
-import { onOfflineStatus, offlineLabel } from '../offline.js';
+import { onOfflineStatus, offlineLabel, checkForUpdate, updateNow, updateWaiting } from '../offline.js';
+import { APP_VERSION } from '../version.js';
 
 let status = null; // {text, kind} shown once after a re-render
 
@@ -103,6 +104,16 @@ export function render(el, params, ctx) {
   });
   requestAnimationFrame(() => { offVal.dataset.mounted = '1'; });
 
+  // Updates: check now, and restart into a downloaded update.
+  const updSmall = h('small', null, updateWaiting() ? 'An update is ready. Tap to restart.' : 'Look for a newer version');
+  const updBtn = h('button', { class: 'row', type: 'button', onclick: async () => {
+    if (updateNow()) { updSmall.textContent = 'Restarting…'; return; }
+    updSmall.textContent = 'Checking…';
+    const found = await checkForUpdate(true);
+    if (updateWaiting()) updSmall.textContent = 'An update is ready. Tap to restart.';
+    else updSmall.textContent = found ? 'Downloading the update… tap again in a moment.' : 'You have the latest version.';
+  } }, h('div', { class: 'ico' }, ICON.info()), h('div', { class: 't' }, 'Check for updates', updSmall));
+
   const resetBtn = h('button', { class: 'row st-danger', type: 'button', onclick: () => confirmReset(ctx, () => {
     status = { text: 'Progress reset.', kind: 'good' };
     rerender();
@@ -134,7 +145,7 @@ export function render(el, params, ctx) {
     h('p', { class: 'note' }, 'After the first download, lessons, video reels and practice work without a connection.'),
     h('h2', { class: 'gh' }, 'About'),
     h('div', { class: 'group' }, h('div', { class: 'row' }, h('div', { class: 'ico' }, ICON.info()),
-      h('div', { class: 't' }, 'DECA Study Buddy', h('small', null, 'Version 1.0 · Works offline')))),
+      h('div', { class: 't' }, 'DECA Study Buddy', h('small', null, `Version ${APP_VERSION} · Works offline`))), updBtn),
     h('p', { class: 'note' }, 'An independent study app for DECA Team Decision Making exams. Not affiliated with or endorsed by DECA Inc. Practice questions are original.'));
 }
 
