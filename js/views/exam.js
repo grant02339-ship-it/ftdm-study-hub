@@ -37,7 +37,7 @@ function infoRow(iconEl, title, sub) {
 function renderIntro(el, ctx) {
   const level = levelOf(ctx.state);
   const start = () => {
-    ctx.state.activeExam = startExam(ctx.data.QUESTIONS, ctx.data.BLUEPRINT, level, Date.now());
+    ctx.state.activeExam = { ...startExam(ctx.data.QUESTIONS, ctx.data.BLUEPRINT, level, Date.now()), event: ctx.data.EVENT.id };
     ctx.save();
     haptic(10);
     el.replaceChildren();

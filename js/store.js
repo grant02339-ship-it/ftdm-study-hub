@@ -1,4 +1,5 @@
 // Progress state: load/save (never throws), record answers, export/import backups.
+import { EVENTS, DEFAULT_EVENT } from '../data/events.js';
 export const STORAGE_KEY = 'ftdm.v1';
 export const BAD_BACKUP = "That file isn't an FTDM Study Hub backup.";
 
@@ -9,7 +10,7 @@ export function defaultState() {
     cards: {},     // cid -> {box, due}
     exams: [],     // [{date, level, score, byArea}]
     activeExam: null,
-    settings: { level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25 },
+    settings: { event: DEFAULT_EVENT, level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25 },
     streak: { count: 0, lastDay: null },
   };
 }
@@ -20,6 +21,7 @@ const nat = v => (Number.isInteger(v) && v >= 0 ? v : 0);
 const isDay = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
 const LEVELS = ['district', 'association', 'icdc'];
 const THEMES = ['auto', 'dark', 'light'];
+const EVENT_IDS = EVENTS.map(e => e.id);
 
 // Copies the object entries `fix` accepts (fix returns a clean value, or null to drop it).
 function mapEntries(obj, fix) {
@@ -56,6 +58,7 @@ function fixExam(e) {
     flagged: strArr(e.flagged),
   };
   if (fin(e.usedMs)) out.usedMs = e.usedMs;
+  if (EVENT_IDS.includes(e.event)) out.event = e.event;
   return out;
 }
 
@@ -63,6 +66,7 @@ function fixSettings(s) {
   const d = defaultState().settings;
   if (!isObj(s)) return d;
   const out = {
+    event: EVENT_IDS.includes(s.event) ? s.event : d.event,
     level: LEVELS.includes(s.level) ? s.level : d.level,
     confDate: isDay(s.confDate) ? s.confDate : null,
     theme: THEMES.includes(s.theme) ? s.theme : d.theme,
@@ -89,6 +93,12 @@ function normalize(raw) {
     settings: fixSettings(raw.settings),
     streak: { count: lastDay ? nat(st.count) : 0, lastDay },
   };
+}
+
+// True only when storage is readable and holds no saved state: a brand-new student who still has to pick an event.
+export function isFirstLaunch(storage) {
+  try { return (storage ?? globalThis.localStorage).getItem(STORAGE_KEY) == null; }
+  catch (e) { return false; }
 }
 
 export function loadState(storage) {

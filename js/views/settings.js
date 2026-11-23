@@ -4,6 +4,8 @@ import { h, icon, openSheet } from '../ui.js';
 import { saveState, exportState, importState, defaultState, BAD_BACKUP } from '../store.js';
 import { LEVEL_NAME } from './learn.js';
 import { levelOf, ymd } from '../practice-lib.js';
+import { openEventSheet } from '../picker.js';
+import { examEvent } from '../event.js';
 import { onOfflineStatus, offlineLabel } from '../offline.js';
 
 let status = null; // {text, kind} shown once after a re-render
@@ -32,6 +34,16 @@ export function render(el, params, ctx) {
   const s = ctx.state.settings;
   const rerender = () => { el.replaceChildren(); render(el, params, ctx); };
   const set = (k, v) => { ctx.state.settings[k] = v; ctx.save(); };
+
+  // Event
+  const ev = ctx.data.EVENT;
+  const eventRow = h('button', { class: 'row st-event-row', type: 'button', onclick: () => openEventSheet(ctx.state, picked => {
+    if (picked.id === ev.id) { rerender(); return; }
+    // A mock exam in progress belongs to the old event; confirm before dropping it.
+    if (ctx.state.activeExam && examEvent(ctx.state.activeExam) !== picked.id) {
+      confirmSwitch(() => { ctx.setEvent(picked.id); rerender(); });
+    } else { ctx.setEvent(picked.id); rerender(); }
+  }) }, h('div', { class: 't' }, 'Competing in', h('small', null, ev.short)), h('span', { class: 'chev', 'aria-hidden': 'true' }, icon('chevron')));
 
   // Competition
   const levelNote = h('p', { class: 'st-help' }, 'Sets the blueprint for mock exams, readiness and Learn.');
@@ -105,6 +117,9 @@ export function render(el, params, ctx) {
 
   el.append(
     h('h1', { class: 'lt' }, 'Settings'),
+    h('h2', { class: 'gh' }, 'Event'),
+    h('div', { class: 'group' }, eventRow),
+    h('p', { class: 'note' }, 'Lessons, practice and mock exams follow your event. Your answers are kept if you switch.'),
     h('h2', { class: 'gh' }, 'Competition'),
     h('div', { class: 'group st-group' },
       h('div', { class: 'st-row st-stack' }, h('span', { class: 'st-label', id: 'st-level-l' }, 'Competition level'), levelSeg, levelNote),
@@ -127,7 +142,22 @@ export function render(el, params, ctx) {
     h('h2', { class: 'gh' }, 'About'),
     h('div', { class: 'group' }, h('div', { class: 'row' }, h('div', { class: 'ico' }, ICON.info()),
       h('div', { class: 't' }, 'FTDM Study Hub', h('small', null, 'Version 1.0 · Works offline')))),
-    h('p', { class: 'note' }, 'An independent study app for the DECA Financial Services Team Decision Making exam. Not affiliated with or endorsed by DECA Inc. Practice questions are original.'));
+    h('p', { class: 'note' }, 'An independent study app for DECA Team Decision Making exams. Not affiliated with or endorsed by DECA Inc. Practice questions are original.'));
+}
+
+function confirmSwitch(done) {
+  let close = null;
+  const yes = h('button', { class: 'cta st-reset-yes', type: 'button', onclick: () => { close(); done(); } }, 'Switch event');
+  const no = h('button', { class: 'btn-2', type: 'button', onclick: () => close() }, 'Keep my exam');
+  const content = h('div', { class: 'st-confirm' },
+    h('div', { class: 'st-confirm-ico' }, icon('alert')),
+    h('h2', { class: 'lt' }, 'Switch events?'),
+    h('p', null, 'Switching events ends your mock exam in progress. Your answers and flashcards are kept.'),
+    yes, no);
+  const onHash = () => close();
+  close = openSheet(content, { label: 'Switch events', onClose: () => window.removeEventListener('hashchange', onHash) });
+  window.addEventListener('hashchange', onHash);
+  setTimeout(() => no.focus({ preventScroll: true }), 50);
 }
 
 function confirmReset(ctx, done) {

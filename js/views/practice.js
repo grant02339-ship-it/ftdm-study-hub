@@ -2,6 +2,7 @@
 import { h, icon } from '../ui.js';
 import { LEVEL_NAME } from './learn.js';
 import { glyph } from './quiz.js';
+import { examEvent } from '../event.js';
 import { levelOf, mistakeIds, restoreExam, examProgress, formatClock } from '../practice-lib.js';
 
 let areaSize = 10; // 10 or 20, remembered for the session
@@ -54,6 +55,10 @@ export function render(el, params, ctx) {
   const counts = {};
   for (const q of QUESTIONS) counts[q.area] = (counts[q.area] || 0) + 1;
   const areaLinks = [];
+  // Areas on the exam with no questions yet (e.g. new event content) are listed as empty.
+  const soon = AREAS.filter(a => !counts[a.id] && BLUEPRINT[a.id] && BLUEPRINT[a.id][level])
+    .map(a => h('div', { class: 'row off', 'aria-disabled': 'true' }, ico(icon(a.id)),
+      h('div', { class: 't' }, a.name, h('small', null, 'No questions in this area yet.'))));
   const areaRows = AREAS.filter(a => counts[a.id]).map(a => {
     const items = BLUEPRINT[a.id] ? BLUEPRINT[a.id][level] : 0;
     const link = row('', icon(a.id), a.name, `${plural(counts[a.id], 'question')}${items ? '' : ` · not on the ${lvl} exam`}`);
@@ -69,7 +74,7 @@ export function render(el, params, ctx) {
       h('span', null, `${v} questions`))));
 
   // History, newest first
-  const history = state.exams.map((e, i) => ({ e, i })).reverse();
+  const history = state.exams.map((e, i) => ({ e, i })).filter(({ e }) => examEvent(e) === data.EVENT.id).reverse();
   const historyBody = history.length
     ? h('div', { class: 'group' }, history.map(({ e, i }) => {
       const pct = Math.round(e.percent ?? (e.total ? (e.score / e.total) * 100 : 0));
@@ -84,7 +89,7 @@ export function render(el, params, ctx) {
     h('p', { class: 'sub' }, `${QUESTIONS.length} questions across ${Object.keys(counts).length} areas`),
     quick,
     h('div', { class: 'pr-gh' }, h('h2', { class: 'gh' }, 'Quiz by area'), seg),
-    h('div', { class: 'group' }, areaRows),
+    h('div', { class: 'group' }, [...areaRows, ...soon]),
     h('h2', { class: 'gh' }, 'Mock exam history'),
     historyBody);
 }

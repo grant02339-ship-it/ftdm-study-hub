@@ -1,7 +1,9 @@
 // Boot, hash router, theme, nav state, large-title collapse.
 // Adding a screen = creating js/views/<name>.js that exports render(el, params, ctx).
 import * as data from '../data/index.js';
-import { loadState, saveState } from './store.js';
+import { loadState, saveState, isFirstLaunch } from './store.js';
+import { currentEvent, eventData, setEvent } from './event.js';
+import { showEventPicker } from './picker.js';
 import { h, icon, brandMark, applyTheme, openSheet, placeholder } from './ui.js';
 import { initOffline, routeChanged } from './offline.js';
 
@@ -38,9 +40,13 @@ export function parseHash(hash) {
 }
 
 /* ---------- Context shared with views ---------- */
+const firstLaunch = isFirstLaunch();
 const ctx = {
   state: loadState(),
-  data,
+  // The content slice for the student's chosen event (areas, blueprint, lessons, questions, cards, videos).
+  get data() { return eventData(currentEvent(ctx.state)); },
+  allData: data,
+  setEvent(id) { setEvent(ctx.state, id); return ctx.save(); },
   save() { return saveState(ctx.state); },
   go(hash) { location.hash = hash; },
   applyTheme,
@@ -193,7 +199,9 @@ applyTheme(ctx.state.settings.theme);
 buildNav();
 if (!location.hash || location.hash === '#' || location.hash === '#/') history.replaceState(null, '', '#/home');
 window.addEventListener('hashchange', route);
-route();
+// A brand-new student picks their event before seeing Home.
+if (firstLaunch) showEventPicker(ev => { ctx.setEvent(ev.id); route(); });
+else route();
 
 /* ---------- Offline support ---------- */
 // One-time, unobtrusive confirmation that everything is saved for offline use.

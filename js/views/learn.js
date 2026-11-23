@@ -110,7 +110,7 @@ function renderHome(el, ctx) {
     const has = QUESTIONS.some(q => q.area === a.id);
     const n = LESSONS.filter(l => l.area === a.id).length;
     return row(`#/learn/${encodeURIComponent(a.id)}`, ico(a.id), a.name,
-      examLine(items, level) + (n ? '' : ' · Lessons coming soon'),
+      examLine(items, level) + (n ? '' : ' · No lessons in this area yet.'),
       masteryMeter(has ? areaMastery(state, QUESTIONS, a.id) : 0), items ? '' : 'off');
   });
   const browse = h('div', { class: 'browse' }, ...shelf, h('h2', { class: 'gh' }, 'Areas'), h('div', { class: 'group' }, areaRows));
@@ -139,7 +139,7 @@ function renderHome(el, ctx) {
   input.addEventListener('keydown', e => { if (e.key === 'Escape' && input.value) { e.stopPropagation(); input.value = ''; paint(); } });
   clear.addEventListener('click', () => { input.value = ''; paint(); input.focus(); });
 
-  el.append(h('h1', { class: 'lt' }, 'Learn'), search, results, browse);
+  el.append(h('h1', { class: 'lt' }, 'Learn'), h('p', { class: 'sub ev-tag' }, data.EVENT.short), search, results, browse);
   paint();
 }
 

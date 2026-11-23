@@ -139,8 +139,9 @@ export function restoreExam(active, questions, rng = Math.random) {
   const firstOpen = qs.findIndex(q => !(q.id in responses));
   const cur = Number.isInteger(active.cur) && active.cur >= 0 && active.cur < qs.length ? active.cur : Math.max(0, firstOpen);
   const level = LEVELS.includes(active.level) ? active.level : 'district';
+  const event = typeof active.event === 'string' ? { event: active.event } : {};
   return {
-    exam: { level, ids: qs.map(q => q.id), responses, flagged, startedAt: active.startedAt || 0, remainingMs, choiceMaps, cur },
+    exam: { ...event, level, ids: qs.map(q => q.id), responses, flagged, startedAt: active.startedAt || 0, remainingMs, choiceMaps, cur },
     questions: qs,
   };
 }
@@ -161,6 +162,7 @@ export function finishExam(state, exam, questions, now) {
     date: ymd(new Date(now)), at: now, level: exam.level,
     score: result.score, total: result.total, percent: result.percent, byArea: result.byArea,
     usedMs: EXAM_MS - exam.remainingMs,
+    ...(exam.event ? { event: exam.event } : {}),
     ids: exam.ids.slice(), responses: { ...exam.responses }, flagged: exam.flagged.slice(),
   };
   state.exams.push(record);

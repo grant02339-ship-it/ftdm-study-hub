@@ -12,12 +12,17 @@ import g_econ from './content/econ.js';
 import g_crco from './content/crco.js';
 import g_ops from './content/ops.js';
 import g_info from './content/info.js';
+import g_mkt_promo from './content/mkt-promo.js';
+import g_mkt_product from './content/mkt-product.js';
+import g_mkt_research from './content/mkt-research.js';
 
 // Explicit registry (no filesystem globbing in a no-build app). Each entry: {lessons,questions,cards,videos}.
-const MODULES = [g_fi_core, g_fi_cluster, g_pd, g_ei, g_law, g_econ, g_crco, g_ops, g_info];
+const MODULES = [g_fi_core, g_fi_cluster, g_pd, g_ei, g_law, g_econ, g_crco, g_ops, g_info, g_mkt_promo, g_mkt_product, g_mkt_research];
 
 // Flipped to true by Task 8 once every PI has a lesson section.
 export const COVERAGE_REQUIRED = true;
+// Flip to true once the Marketing tier-2 content (content/mkt-*.js) is registered in MODULES.
+export const MARKETING_READY = true;
 
 export { PIS, AREAS, BLUEPRINT };
 export const LESSONS = MODULES.flatMap(m => m.lessons || []);

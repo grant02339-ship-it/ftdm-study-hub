@@ -12,7 +12,7 @@ export default [
 <ul><li>Set small, reachable goals and celebrate finishing them.</li><li>Focus on your strengths while working on weaknesses.</li><li>Replace harsh self-talk ("I always fail") with fair self-talk ("I missed this one, so I will adjust").</li><li>Surround yourself with supportive people.</li></ul>
 <p>In business, employees with healthy self-esteem are more willing to take on new tasks, make decisions, and recover after setbacks.</p>` },
   { pi:'EI:017', heading:'Overcoming biases and stereotypes', html:`<p>A <strong>bias</strong> is a leaning for or against something without enough fair evidence. A <strong>stereotype</strong> is a fixed, oversimplified belief about a whole group of people ("young workers are lazy"). Everyone has some biases, many of them unconscious, so the goal is to notice them and not let them drive decisions.</p>
-<p>In finance, biases can cause real harm: a loan officer who assumes a certain type of applicant is risky, or a manager who only promotes people who remind them of themselves, is making unfair and possibly illegal decisions.</p>
+<p>In any workplace, biases can cause real harm. In finance, for example, a loan officer who assumes a certain type of applicant is risky, or a manager who only promotes people who remind them of themselves, is making unfair and possibly illegal decisions.</p>
 <h4>How to overcome them</h4>
 <ul><li>Admit that you have biases.</li><li>Judge people by facts, behavior and results, not by group labels.</li><li>Get to know people from different backgrounds.</li><li>Use consistent, written criteria when hiring or evaluating.</li><li>Ask others to point out when you may be making assumptions.</li></ul>
 <div class="example"><h4>Example</h4><p>Jordan assumes a quiet teammate has no ideas. After inviting that teammate to share, Jordan finds the best idea of the project. Replacing the assumption with evidence is how bias is overcome.</p></div>` },
@@ -81,7 +81,7 @@ export default [
   pis:['EI:022','EI:021','EI:127','EI:004','EI:075','EI:128'], minutes:9,
   sections:[
   { pi:'EI:022', heading:'Honesty and integrity', html:`<p><strong>Honesty</strong> is telling the truth and not deceiving others. <strong>Integrity</strong> goes further: your actions consistently match strong moral principles, even when nobody is watching and even when it costs you.</p>
-<p>In finance, integrity is the foundation of the whole industry. Customers hand over their money and personal information because they trust the institution and its people.</p>
+<p>In every industry integrity matters; in finance, for example, it is the foundation of the whole industry. Customers hand over their money and personal information because they trust the institution and its people.</p>
 <h4>Examples of integrity</h4>
 <ul><li>Reporting a billing error that benefits your company.</li><li>Giving accurate information about fees and risks.</li><li>Not taking credit for a teammate's work.</li><li>Returning extra change a customer left behind.</li></ul>
 <p>One dishonest act can destroy a reputation that took years to build. Small "white lies" at work, such as saying a report is done when it is not, erode trust quickly.</p>
@@ -90,7 +90,7 @@ export default [
 <h4>Signs of a responsible worker</h4>
 <ul><li>Meets deadlines or warns others in advance if one will be missed.</li><li>Follows safety and security procedures.</li><li>Uses company time and resources for work.</li><li>Is reliable without constant supervision.</li></ul>
 <p>Responsibility also applies outside work. Posting inappropriate content online, for example, can reflect on your employer and your future opportunities.</p>
-<p>Responsible people are given more freedom and bigger assignments. In a bank, where mistakes can cost customers money, dependability is not optional. It is part of the job.</p>` },
+<p>Responsible people are given more freedom and bigger assignments. In any business where mistakes can cost customers money, such as a bank, dependability is not optional. It is part of the job.</p>` },
   { pi:'EI:127', heading:'Demonstrating fairness', html:`<p><strong>Fairness</strong> means treating people equitably, using the same standards and giving everyone a reasonable chance, without favoritism or discrimination. Fair people base decisions on facts and relevant criteria, not on friendship, appearance or personal bias.</p>
 <div class="example"><h4>Example</h4><p>A manager assigns overtime. A fair manager rotates it by a clear rule instead of always giving it to a personal friend, and explains the rule to everyone.</p></div>
 <h4>Ways to be fair</h4>
@@ -107,7 +107,7 @@ export default [
   { pi:'EI:128', heading:'Building trust in relationships', html:`<p><strong>Trust</strong> is the confidence that another person will be honest, reliable and act in good faith. It is built slowly through consistent behavior and lost quickly through a single betrayal.</p>
 <h4>How to build trust</h4>
 <ul><li><strong>Keep promises</strong> and meet commitments.</li><li><strong>Be honest</strong>, even with bad news.</li><li><strong>Be consistent</strong> so people know what to expect.</li><li><strong>Protect confidences</strong>.</li><li><strong>Show competence</strong> by doing quality work.</li><li><strong>Show care</strong> by listening and considering others' interests.</li></ul>
-<p>Trust matters with customers, coworkers and supervisors. Customers who trust a financial advisor stay loyal and refer others. Teams with trust share information, admit mistakes and solve problems faster.</p>
+<p>Trust matters with customers, coworkers and supervisors. Customers who trust a business, such as a financial advisor, stay loyal and refer others. Teams with trust share information, admit mistakes and solve problems faster.</p>
 <div class="tip"><p>Trust is built in drops and lost in buckets. Small, repeated acts of reliability matter most.</p></div>` }
   ],
   keyTerms:[
@@ -126,7 +126,7 @@ export default [
 <p>Common ethical values include honesty, fairness, respect, responsibility and transparency.</p>
 <h4>Sources of a person's ethics</h4>
 <ul><li>Family and culture</li><li>Religion or personal beliefs</li><li>Education and experiences</li><li>Company codes of ethics and professional standards</li></ul>
-<p>A <strong>code of ethics</strong> is a written statement of a company's values and expected behavior. In financial services, ethical behavior is especially important because customers rely on advisors, bankers and accountants to put their interests first.</p>` },
+<p>A <strong>code of ethics</strong> is a written statement of a company's values and expected behavior. Ethical behavior matters in every industry; in financial services, for example, it is especially important because customers rely on advisors, bankers and accountants to put their interests first.</p>` },
   { pi:'EI:124', heading:'Why ethical dilemmas happen', html:`<p>An <strong>ethical dilemma</strong> is a situation where you must choose between options that each involve a conflict of values, so no choice seems fully right. Dilemmas arise for several reasons:</p>
 <ul><li><strong>Pressure to meet goals</strong> - quotas, deadlines and bonuses can tempt people to cut corners.</li><li><strong>Competing loyalties</strong> - loyalty to a boss, a friend, the company or the customer may point different ways.</li><li><strong>Conflicts of interest</strong> - a personal gain could influence a business decision.</li><li><strong>Unclear rules</strong> - policies may not cover a new situation.</li><li><strong>Personal gain or fear</strong> - money, status or fear of losing a job.</li><li><strong>Cultural differences</strong> in what is seen as acceptable.</li></ul>
 <div class="example"><h4>Example</h4><p>A loan officer's bonus depends on volume, and a friend applies for a loan that is borderline. Loyalty, personal interest and company policy collide.</p></div>` },

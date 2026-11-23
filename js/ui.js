@@ -61,6 +61,14 @@ const ICONS = {
   HR: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.4 3.3-5.5 6.5-5.5s5.7 2.1 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14.8c1.8.8 3 2.6 3.5 5.2"/></svg>`,
   MK: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M3 12V4a1 1 0 011-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor"/></svg>`,
   SM: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>`,
+  // Marketing cluster areas
+  IM: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M8.5 12.5v-2M11 12.5v-4M13.5 12.5v-3"/></svg>`,
+  PM: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>`,
+  PR: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M4 10v4h3.5l6 4.5v-13l-6 4.5z"/><path d="M17 9.5a3.5 3.5 0 010 5"/></svg>`,
+  SE: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M3 12l5-1 4-4 5 2 4 4-5 5-3-1-4 1z"/><path d="M8 11l4 4"/></svg>`,
+  CM: `<svg viewBox="0 0 24 24" ${STROKE}><rect x="9" y="3" width="6" height="5" rx="1.2"/><rect x="3" y="16" width="6" height="5" rx="1.2"/><rect x="15" y="16" width="6" height="5" rx="1.2"/><path d="M12 8v4M6 16v-4h12v4"/></svg>`,
+  MP: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>`,
+  PI: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M3 12V4a1 1 0 011-1h8l9 9-9 9z"/><path d="M8.5 9.5h3M10 8v5"/></svg>`,
 };
 
 export function icon(name) {

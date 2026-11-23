@@ -1,0 +1,42 @@
+/* Event picker: first-launch welcome and Settings sheet. */
+.ev-welcome{
+  position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto;
+  display:flex;justify-content:center;
+  padding:max(28px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  opacity:0;transform:translateY(14px);transition:opacity .45s ease, transform .6s var(--spring);
+}
+.ev-welcome.in{opacity:1;transform:none}
+.ev-welcome.out{opacity:0;transform:scale(1.02);pointer-events:none;transition:opacity .28s ease, transform .28s ease}
+.ev-welcome-in{width:100%;max-width:520px;margin:auto;padding:24px 0}
+.ev-brand svg{width:64px;height:64px;border-radius:16px;margin:0 0 28px;box-shadow:0 10px 30px -8px rgba(240,122,52,.45)}
+.ev-h{font:700 36px/1.08 var(--round);letter-spacing:-.025em}
+.ev-lede{color:var(--text2);font-size:17px;margin:10px 0 28px;max-width:34ch}
+.ev-list{display:grid;gap:14px}
+.ev-card{
+  display:flex;align-items:center;gap:16px;width:100%;text-align:left;
+  padding:20px 18px;border-radius:26px;background:var(--surface);
+  box-shadow:inset 0 0 0 1.5px transparent;
+  transition:transform .25s var(--spring), box-shadow .2s ease, background .2s ease;
+}
+.ev-card:active{transform:scale(.975)}
+@media (hover:hover){.ev-card:hover{box-shadow:inset 0 0 0 1.5px var(--orange)}}
+.ev-card.on{background:var(--orange-dim);box-shadow:inset 0 0 0 2px var(--orange)}
+.ev-card:focus-visible{outline-offset:3px;border-radius:26px}
+.ev-ico{flex:none;width:52px;height:52px;border-radius:16px;background:var(--orange);color:var(--on-orange);display:grid;place-items:center}
+.ev-ico svg{width:26px;height:26px}
+.ev-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ev-name{font:700 20px/1.2 var(--round);letter-spacing:-.01em}
+.ev-sub{color:var(--text2);font-size:14.5px;line-height:1.35}
+.ev-full{color:var(--text2);font-size:12px;opacity:.75;margin-top:2px}
+.ev-check{flex:none;width:26px;height:26px;display:grid;place-items:center;color:var(--text2);opacity:.6}
+.ev-check svg{width:9px;height:15px}
+.ev-card.on .ev-check{background:var(--orange);color:var(--on-orange);border-radius:50%;opacity:1}
+.ev-card.on .ev-check svg{width:15px;height:15px}
+.ev-sheet{padding-bottom:8px}
+.ev-sheet .ev-list{margin-top:6px}
+.ev-sheet .ev-card{padding:16px}
+.st-event-val{color:var(--text2);font-size:16px;text-align:right;min-width:0}
+.st-event-row{width:100%;text-align:left}
+.ev-tag{color:var(--text2);font-weight:600}
+.ev-tag-link{color:inherit}
+@media (prefers-reduced-motion: reduce){.ev-welcome,.ev-welcome.out,.ev-card{transition:none}}

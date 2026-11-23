@@ -1,7 +1,7 @@
 // Videos for Professional Development
 export default [
   {
-    id: 'v-pd-careers', area: 'PD', title: 'Finance careers and credentials', lesson: 'pd-career-exploration',
+    id: 'v-pd-careers', area: 'PD', title: 'Business careers and credentials', lesson: 'pd-career-exploration',
     scenes: [
       { dur: 6, kind: 'title', caption: "Want a career in finance? Here's the map, the jobs, and the licenses.", data: { title: 'Careers in financial services', subtitle: 'Jobs, licenses and credentials' } },
       { dur: 9, kind: 'bullets', caption: "Start with self assessment. Look at your interests, skills, and values. Then research with the Occupational Outlook Handbook and real professionals.", data: { heading: 'Explore before you choose', items: ['Interests, skills and values', 'Occupational Outlook Handbook', 'Counselors and professionals', 'Job shadowing and interviews'] } },

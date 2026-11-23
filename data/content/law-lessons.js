@@ -429,7 +429,7 @@ export default [
   {
     id: 'bl-compliance',
     area: 'BL',
-    title: 'Compliance in the finance industry',
+    title: 'Compliance and following the spirit of the law',
     pis: ['BL:163', 'BL:148', 'BL:149'],
     minutes: 5,
     sections: [

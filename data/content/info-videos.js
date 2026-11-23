@@ -14,7 +14,7 @@ export default [
     ]
   },
   {
-    id: 'v-nf-protect', area: 'NF', title: 'Protecting information in finance', lesson: 'nf-ethics-legal',
+    id: 'v-nf-protect', area: 'NF', title: 'Protecting information at work', lesson: 'nf-ethics-legal',
     scenes: [
       { dur: 6, kind: 'title', caption: "One data breach can wreck a bank's reputation. Here's how finance protects information.", data: { title: 'Protecting information', subtitle: 'Security, privacy, and ethics' } },
       { dur: 7, kind: 'bullets', caption: "Customers trust finance with sensitive details. Protect it three ways. Ethics, law, and security tools.", data: { heading: 'Three layers of protection', items: ['Ethics', 'Law', 'Security tools'] } },

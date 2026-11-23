@@ -2,6 +2,7 @@
 import { h, icon, reducedMotion } from '../ui.js';
 import { readiness, weakest, areaMastery } from '../progress.js';
 import { dueCards } from '../srs.js';
+import { examEvent } from '../event.js';
 
 const LEVEL = {
   district: { exam: 'district', meet: 'Districts' },
@@ -122,11 +123,13 @@ export function render(el, params, ctx) {
     h('a', { class: 'icon-btn only-phone', href: '#/settings', 'aria-label': 'Settings' }, icon('settings')));
 
   const cd = countdown(state.settings.confDate, level, today);
-  const sub = h('p', { class: 'sub' }, cd || h('a', { href: '#/settings' }, 'Set your conference date'));
+  const sub = h('p', { class: 'sub' }, h('span', { class: 'ev-tag' }, data.EVENT.short), ' · ',
+    cd || h('a', { href: '#/settings' }, 'Set your conference date'));
 
   // Ring + stats
   const pct = Math.round(readiness(state, level, QUESTIONS, BLUEPRINT));
-  const last = state.exams.length ? state.exams[state.exams.length - 1] : null;
+  const mine = state.exams.filter(e => examEvent(e) === data.EVENT.id);
+  const last = mine.length ? mine[mine.length - 1] : null;
   const lastVal = last ? (last.percent ?? last.score) : null;
   const streak = liveStreak(state.streak, today);
   const ringCard = h('section', { class: 'ringwrap', 'aria-label': 'Readiness' },
