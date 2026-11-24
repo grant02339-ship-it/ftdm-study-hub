@@ -24,9 +24,11 @@ import g_ent_fin from './content/ent-fin.js';
 import g_ent_ops from './content/ent-ops.js';
 import g_ent_strat from './content/ent-strat.js';
 import g_ent_mkt from './content/ent-mkt.js';
+import g_bma_ops from './content/bma-ops.js';
+import g_bma_mgmt from './content/bma-mgmt.js';
 
 // Explicit registry (no filesystem globbing in a no-build app). Each entry: {lessons,questions,cards,videos}.
-const MODULES = [g_fi_core, g_fi_cluster, g_pd, g_ei, g_law, g_econ, g_crco, g_ops, g_info, g_mkt_promo, g_mkt_product, g_mkt_research, g_ht_info, g_ht_ops, g_ht_guest, g_ht_market, g_ent_start, g_ent_fin, g_ent_ops, g_ent_strat, g_ent_mkt];
+const MODULES = [g_fi_core, g_fi_cluster, g_pd, g_ei, g_law, g_econ, g_crco, g_ops, g_info, g_mkt_promo, g_mkt_product, g_mkt_research, g_ht_info, g_ht_ops, g_ht_guest, g_ht_market, g_ent_start, g_ent_fin, g_ent_ops, g_ent_strat, g_ent_mkt, g_bma_ops, g_bma_mgmt];
 
 // Flipped to true by Task 8 once every PI has a lesson section.
 export const COVERAGE_REQUIRED = true;
@@ -36,6 +38,8 @@ export const MARKETING_READY = true;
 export const HOSPITALITY_READY = true;
 // Flip to true once the Entrepreneurship content (content/ent-*.js) is registered in MODULES.
 export const ENTREPRENEURSHIP_READY = true;
+// Flip to true once the Business management and administration content (content/bma-*.js) is registered in MODULES.
+export const BMA_READY = true;
 
 export { PIS, AREAS, BLUEPRINT };
 export const LESSONS = MODULES.flatMap(m => m.lessons || []);

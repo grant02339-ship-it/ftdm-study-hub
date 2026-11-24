@@ -6,6 +6,8 @@ import { EVENTS, CLUSTERS, DEFAULT_EVENT } from '../data/events.js';
 
 export { EVENTS, CLUSTERS, DEFAULT_EVENT };
 
+export const NO_EXAM_NOTE = 'This event has no exam. Use these marketing lessons, reels and quizzes to strengthen your campaign.';
+
 export const eventById = id => EVENTS.find(e => e.id === id) || null;
 
 // The event chosen in settings; unknown or missing ids fall back to the default event.

@@ -2,7 +2,7 @@
 import { h, icon } from '../ui.js';
 import { LEVEL_NAME } from './learn.js';
 import { glyph } from './quiz.js';
-import { examEvent } from '../event.js';
+import { examEvent, NO_EXAM_NOTE } from '../event.js';
 import { levelOf, mistakeIds, restoreExam, examProgress, formatClock } from '../practice-lib.js';
 
 let areaSize = 10; // 10 or 20, remembered for the session
@@ -49,7 +49,7 @@ export function render(el, params, ctx) {
   const quick = h('div', { class: 'group' },
     row('#/quiz?mode=quick&n=10', icon('practice'), 'Quick 10', `Mixed questions, weighted like the ${lvl} exam`),
     mistakeRow,
-    row('#/exam', icon('exam'), examTitle, examSub, restored ? h('span', { class: 'pr-live', 'aria-hidden': 'true' }) : null));
+    ...(data.EVENT.noExam ? [] : [row('#/exam', icon('exam'), examTitle, examSub, restored ? h('span', { class: 'pr-live', 'aria-hidden': 'true' }) : null)]));
 
   // Quiz by area
   const counts = {};
@@ -88,6 +88,7 @@ export function render(el, params, ctx) {
     h('h1', { class: 'lt' }, 'Practice'),
     h('p', { class: 'sub' }, `${QUESTIONS.length} questions across ${Object.keys(counts).length} areas`),
     quick,
+    ...(data.EVENT.noExam ? [h('p', { class: 'note' }, NO_EXAM_NOTE)] : []),
     h('div', { class: 'pr-gh' }, h('h2', { class: 'gh' }, 'Quiz by area'), seg),
     h('div', { class: 'group' }, [...areaRows, ...soon]),
     h('h2', { class: 'gh' }, 'Mock exam history'),

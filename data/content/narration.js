@@ -1927,5 +1927,137 @@ export default {
    "audio": "media/v-enm-new-offering-7.m4a",
    "dur": 6
   }
+ ],
+ "v-bmo-project-lifecycle": [
+  {
+   "audio": "media/v-bmo-project-lifecycle-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-bmo-project-lifecycle-1.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmo-project-lifecycle-2.m4a",
+   "dur": 4
+  },
+  {
+   "audio": "media/v-bmo-project-lifecycle-3.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmo-project-lifecycle-4.m4a",
+   "dur": 10
+  },
+  {
+   "audio": "media/v-bmo-project-lifecycle-5.m4a",
+   "dur": 10
+  },
+  {
+   "audio": "media/v-bmo-project-lifecycle-6.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmo-project-lifecycle-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-bmo-quality-risk": [
+  {
+   "audio": "media/v-bmo-quality-risk-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-bmo-quality-risk-1.m4a",
+   "dur": 10
+  },
+  {
+   "audio": "media/v-bmo-quality-risk-2.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmo-quality-risk-3.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-bmo-quality-risk-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmo-quality-risk-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmo-quality-risk-6.m4a",
+   "dur": 8
+  },
+  {
+   "audio": "media/v-bmo-quality-risk-7.m4a",
+   "dur": 6
+  }
+ ],
+ "v-bmm-knowledge-mgmt": [
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-2.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-3.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-4.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-5.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-6.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-bmm-knowledge-mgmt-7.m4a",
+   "dur": 7
+  }
+ ],
+ "v-bmm-dispute-resolution": [
+  {
+   "audio": "media/v-bmm-dispute-resolution-0.m4a",
+   "dur": 5
+  },
+  {
+   "audio": "media/v-bmm-dispute-resolution-1.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmm-dispute-resolution-2.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmm-dispute-resolution-3.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmm-dispute-resolution-4.m4a",
+   "dur": 7
+  },
+  {
+   "audio": "media/v-bmm-dispute-resolution-5.m4a",
+   "dur": 6
+  },
+  {
+   "audio": "media/v-bmm-dispute-resolution-6.m4a",
+   "dur": 6
+  }
  ]
 };

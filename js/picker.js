@@ -9,6 +9,7 @@ const BLURB = {
   mtdm: 'Market planning, research, branding and promotion strategy.',
   htdm: 'Hotels, restaurants, guest service and selling.',
   ttdm: 'Destinations, travel products, promotion and planning.',
+  bltdm: 'Law, ethics, operations and management decisions.',
   pbm: 'Business core: management, operations and communication.',
   pen: 'Business core with a start-up and small business lens.',
   pfn: 'Business core: money, financial analysis and economics.',
@@ -16,8 +17,15 @@ const BLURB = {
   pmk: 'Business core: customers, communication and marketing basics.',
   etdm: 'Start-ups, small business strategy, finance and promotion.',
   ent: 'Owning and running a small business.',
+  rms: 'Retail operations, merchandising, selling and customer service.',
+  sem: 'Marketing for sports, entertainment and events.',
+  bsm: 'Marketing and selling business-to-business services.',
+  aam: 'Fashion retail, merchandising and apparel promotion.',
+  fce: 'Advising clients on banking, investing and financial planning.',
+  bfs: 'Business finance, accounting basics and financial analysis.',
+  imce: 'Campaign planning, promotion and media — no exam.',
 };
-const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP', htdm: 'CR', ttdm: 'MP', pbm: 'OP', pen: 'EN', pfn: 'FI', pht: 'CR', pmk: 'MK', etdm: 'EN', ent: 'EN' };
+const GLYPH = { ftdm: 'FI', stdm: 'MK', btdm: 'PM', mtdm: 'MP', htdm: 'CR', ttdm: 'MP', pbm: 'OP', pen: 'EN', pfn: 'FI', pht: 'CR', pmk: 'MK', etdm: 'EN', bltdm: 'BL', ent: 'EN', rms: 'PM', sem: 'MK', bsm: 'SE', aam: 'PM', fce: 'CR', bfs: 'FI', imce: 'PR' };
 
 function checkMark() {
   const t = document.createElement('template');
@@ -26,7 +34,7 @@ function checkMark() {
 }
 
 // One big rounded card per event. selectedId marks the current one (Settings); onPick(event) fires on tap.
-const GROUP_LABEL = { tdm: 'Team decision making', principles: 'Principles (first-year members)', series: 'Individual series' };
+const GROUP_LABEL = { tdm: 'Team decision making', principles: 'Principles (first-year members)', series: 'Individual series', projects: 'Projects (no exam)' };
 
 function eventCards(selectedId, onPick) {
   let lastGroup = null;

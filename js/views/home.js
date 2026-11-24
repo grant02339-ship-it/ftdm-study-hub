@@ -2,7 +2,7 @@
 import { h, icon, reducedMotion } from '../ui.js';
 import { readiness, weakest, areaMastery } from '../progress.js';
 import { unknownCards } from '../deck.js';
-import { examEvent } from '../event.js';
+import { examEvent, NO_EXAM_NOTE } from '../event.js';
 import { eventChip } from '../picker.js';
 
 const LEVEL = {
@@ -169,10 +169,11 @@ export function render(el, params, ctx) {
   const ctaNote = h('p', { class: 'cta-note' },
     resume ? 'Pick up where you left off.' : `100 questions, ${examName} blueprint`);
 
+  const noExam = !!data.EVENT.noExam;
   el.append(...[
     titleRow, sub, ringCard, note,
     h('h2', { class: 'gh' }, 'Study next'), h('div', { class: 'group' }, studyRows),
     h('h2', { class: 'gh' }, 'Flashcards'), h('div', { class: 'group' }, cardsRow),
-    cta, ctaNote,
+    ...(noExam ? [h('p', { class: 'note' }, NO_EXAM_NOTE)] : [cta, ctaNote]),
   ].filter(Boolean));
 }

@@ -69,9 +69,10 @@ const ICONS = {
   CM: `<svg viewBox="0 0 24 24" ${STROKE}><rect x="9" y="3" width="6" height="5" rx="1.2"/><rect x="3" y="16" width="6" height="5" rx="1.2"/><rect x="15" y="16" width="6" height="5" rx="1.2"/><path d="M12 8v4M6 16v-4h12v4"/></svg>`,
   MP: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>`,
   PI: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M3 12V4a1 1 0 011-1h8l9 9-9 9z"/><path d="M8.5 9.5h3M10 8v5"/></svg>`,
-  // Hospitality cluster areas (KM, QM are new; the rest reuse existing ids)
+  // Hospitality cluster areas (KM, QM are new; the rest reuse existing ids). PJ is new with Business management.
   KM: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></svg>`,
   QM: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>`,
+  PJ: `<svg viewBox="0 0 24 24" ${STROKE}><rect x="3" y="4" width="10" height="4" rx="1"/><rect x="8" y="10" width="13" height="4" rx="1"/><rect x="5" y="16" width="9" height="4" rx="1"/></svg>`,
 };
 
 export function icon(name) {

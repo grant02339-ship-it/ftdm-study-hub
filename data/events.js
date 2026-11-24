@@ -1,5 +1,5 @@
 // Competitive events and the career-cluster exam each one is built on.
-// Finance reuses areas.js; Marketing, Hospitality and Entrepreneurship carry their own areas + blueprint (research_notes/DECA <cluster> cluster exam).
+// Finance reuses areas.js; Marketing, Hospitality, Entrepreneurship and Business management carry their own areas + blueprint (research_notes/DECA <cluster> cluster exam).
 import { AREAS, BLUEPRINT } from './areas.js';
 
 export const EVENTS = [
@@ -10,12 +10,20 @@ export const EVENTS = [
   { id: 'htdm', name: 'Hospitality Services Team Decision Making', short: 'Hospitality Services', cluster: 'hospitality' },
   { id: 'ttdm', name: 'Travel and Tourism Team Decision Making', short: 'Travel & Tourism', cluster: 'hospitality' },
   { id: 'etdm', name: 'Entrepreneurship Team Decision Making', short: 'Entrepreneurship', cluster: 'entrepreneurship' },
+  { id: 'bltdm', name: 'Business Law and Ethics Team Decision Making', short: 'Business Law & Ethics', cluster: 'bma' },
   { id: 'pbm', name: 'Principles of Business Management and Administration', short: 'Principles of Business Management', cluster: 'core', group: 'principles' },
   { id: 'pen', name: 'Principles of Entrepreneurship', short: 'Principles of Entrepreneurship', cluster: 'core', group: 'principles' },
   { id: 'pfn', name: 'Principles of Finance', short: 'Principles of Finance', cluster: 'core', group: 'principles' },
   { id: 'pht', name: 'Principles of Hospitality and Tourism', short: 'Principles of Hospitality & Tourism', cluster: 'core', group: 'principles' },
   { id: 'pmk', name: 'Principles of Marketing', short: 'Principles of Marketing', cluster: 'core', group: 'principles' },
   { id: 'ent', name: 'Entrepreneurship Series', short: 'Entrepreneurship Series', cluster: 'entrepreneurship', group: 'series' },
+  { id: 'rms', name: 'Retail Merchandising Series', short: 'Retail Merchandising', cluster: 'marketing', group: 'series' },
+  { id: 'sem', name: 'Sports and Entertainment Marketing Series', short: 'Sports & Entertainment Marketing Series', cluster: 'marketing', group: 'series' },
+  { id: 'bsm', name: 'Business Services Marketing Series', short: 'Business Services Marketing', cluster: 'marketing', group: 'series' },
+  { id: 'aam', name: 'Apparel and Accessories Marketing Series', short: 'Apparel & Accessories Marketing', cluster: 'marketing', group: 'series' },
+  { id: 'fce', name: 'Financial Consulting', short: 'Financial Consulting', cluster: 'finance', group: 'series' },
+  { id: 'bfs', name: 'Business Finance Series', short: 'Business Finance', cluster: 'finance', group: 'series' },
+  { id: 'imce', name: 'Integrated Marketing Campaign-Event', short: 'Integrated Marketing Campaign: Event', cluster: 'marketing', group: 'projects', noExam: true },
 ];
 export const DEFAULT_EVENT = 'ftdm';
 
@@ -117,6 +125,30 @@ export const CLUSTERS = {
       QM: { district: 1, association: 1, icdc: 1 },
       SE: { district: 1, association: 1, icdc: 1 },
       CO: { district: 1, association: 0, icdc: 1 },
+    },
+  },
+  bma: {
+    name: 'Business management and administration',
+    areas: ['OP', 'EI', 'SM', 'CO', 'FI', 'NF', 'EC', 'KM', 'PD', 'PJ', 'BL', 'RM', 'QM', 'CR', 'EN', 'HR', 'MK'],
+    names: { OP: 'Operations', EI: 'Emotional intelligence', SM: 'Strategic management', CO: 'Communications', FI: 'Financial analysis', NF: 'Information management', EC: 'Economics', KM: 'Knowledge management', PD: 'Professional development', PJ: 'Project management', BL: 'Business law', RM: 'Risk management', QM: 'Quality management', CR: 'Customer relations', EN: 'Entrepreneurship', HR: 'Human resources management', MK: 'Marketing' },
+    blueprint: {
+      OP: { district: 21, association: 24, icdc: 26 },
+      EI: { district: 9, association: 8, icdc: 6 },
+      SM: { district: 8, association: 9, icdc: 10 },
+      CO: { district: 7, association: 6, icdc: 6 },
+      FI: { district: 7, association: 6, icdc: 5 },
+      NF: { district: 7, association: 6, icdc: 6 },
+      EC: { district: 6, association: 5, icdc: 4 },
+      KM: { district: 6, association: 7, icdc: 8 },
+      PD: { district: 6, association: 5, icdc: 4 },
+      PJ: { district: 6, association: 7, icdc: 8 },
+      BL: { district: 5, association: 5, icdc: 5 },
+      RM: { district: 4, association: 5, icdc: 5 },
+      QM: { district: 3, association: 4, icdc: 5 },
+      CR: { district: 2, association: 2, icdc: 1 },
+      EN: { district: 1, association: 0, icdc: 0 },
+      HR: { district: 1, association: 0, icdc: 0 },
+      MK: { district: 1, association: 1, icdc: 1 },
     },
   },
   core: {
