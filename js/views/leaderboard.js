@@ -112,7 +112,7 @@ export function render(el, params, ctx) {
 
   el.append(
     h('h1', { class: 'lt' }, 'Leaderboard'),
-    h('p', { class: 'sub' }, 'Chapter students who joined, ranked by what they’ve studied.'),
+    h('p', { class: 'sub' }, 'DECA Study Buddy students everywhere who joined, ranked by what they’ve studied.'),
     box('Rankings', null, [modeSeg, chips, body, foot, live], { class: 'lb-box' }),
     ...(joinRow ? [box(null, null, [h('div', { class: 'group' }, joinRow)], { label: 'Join' })] : []));
   paint();

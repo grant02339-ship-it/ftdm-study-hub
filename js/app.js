@@ -205,7 +205,7 @@ async function route() {
   if (token === navToken) routeChanged();
 }
 
-/* ---------- Chapter leaderboard ---------- */
+/* ---------- Worldwide leaderboard ---------- */
 // One-time invitation on Home, after the name and event steps. Marked asked as soon as it opens.
 function askLeaderboard() {
   const lb = ctx.state.leaderboard;

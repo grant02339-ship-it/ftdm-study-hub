@@ -1,7 +1,7 @@
 // Cache-first service worker. The precache list is generated: run
 // `python3 scripts/build_precache.py` after changing any file under app/.
 /*PRECACHE_START*/
-const VERSION = "5133616c067b";
+const VERSION = "0107a35f509b";
 const PRECACHE = [
   "./index.html",
   "./css/app.css",

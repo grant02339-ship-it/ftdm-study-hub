@@ -90,7 +90,7 @@ export function render(el, params, ctx) {
     h('p', { class: 'sub' }, `${QUESTIONS.length} questions across ${Object.keys(counts).length} areas`),
     quick,
     box('Leaderboard', null, [h('div', { class: 'group' },
-      row('#/leaderboard', icon('trophy'), 'Chapter leaderboard', state.leaderboard.optIn ? 'See where you rank this week' : 'See who’s studying the most this week'))]),
+      row('#/leaderboard', icon('trophy'), 'Worldwide leaderboard', state.leaderboard.optIn ? 'See where you rank this week' : 'See who’s studying the most this week'))]),
     box('Quiz by area', seg, h('div', { class: 'group' }, [...areaRows, ...soon]), { class: 'pr-areas' }),
     box('Mock exam history', history.length ? `${history.length} taken` : null, historyBody));
 }
