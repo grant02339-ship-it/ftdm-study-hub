@@ -64,6 +64,11 @@ function fixExam(e) {
   };
   if (fin(e.usedMs)) out.usedMs = e.usedMs;
   if (EVENT_IDS.includes(e.event)) out.event = e.event;
+  // Shown choice order per question (array of original indexes), used by the review.
+  if (isObj(e.choiceMaps)) {
+    out.choiceMaps = mapEntries(e.choiceMaps, m =>
+      (Array.isArray(m) && m.every(Number.isInteger) && new Set(m).size === m.length ? m : null));
+  }
   return out;
 }
 

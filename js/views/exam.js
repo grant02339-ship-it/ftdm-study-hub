@@ -302,10 +302,14 @@ function renderResults(el, ctx, rec, timeUp = false) {
     const items = qs.map((q, i) => {
       const st = status(q);
       const label = st === 'right' ? 'Correct' : st === 'wrong' ? 'Incorrect' : 'Unanswered';
-      const choices = q.choices.map((c, k) => {
+      // Show choices in the order the student saw them (saved map), so letters match the exam.
+      const saved = rec.choiceMaps && rec.choiceMaps[q.id];
+      const order = Array.isArray(saved) && saved.length === q.choices.length ? saved : q.choices.map((_, k) => k);
+      const choices = order.map((k, pos) => {
+        const c = q.choices[k];
         const cls = k === q.answer ? 'right' : k === responses[q.id] ? 'wrong' : '';
         const tag = k === q.answer ? (k === responses[q.id] ? 'Your answer · correct' : 'Correct answer') : k === responses[q.id] ? 'Your answer' : '';
-        return h('li', { class: `ex-rc ${cls}` }, h('span', { class: 'k', 'aria-hidden': 'true' }, KEYS[k]),
+        return h('li', { class: `ex-rc ${cls}` }, h('span', { class: 'k', 'aria-hidden': 'true' }, KEYS[pos]),
           h('span', null, c, tag ? h('small', null, tag) : null));
       });
       return h('details', { class: `ex-rev ${st}`, dataset: { st, flag: flagged.has(q.id) ? '1' : '' } },

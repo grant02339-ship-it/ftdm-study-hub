@@ -164,6 +164,8 @@ export function finishExam(state, exam, questions, now) {
     usedMs: EXAM_MS - exam.remainingMs,
     ...(exam.event ? { event: exam.event } : {}),
     ids: exam.ids.slice(), responses: { ...exam.responses }, flagged: exam.flagged.slice(),
+    // The order each question's choices were shown in, so the review uses the same letters.
+    ...(exam.choiceMaps ? { choiceMaps: { ...exam.choiceMaps } } : {}),
   };
   state.exams.push(record);
   state.activeExam = null;
