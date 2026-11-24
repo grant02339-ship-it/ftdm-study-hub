@@ -9,6 +9,7 @@ import { h, icon, brandMark, applyTheme, openSheet, placeholder } from './ui.js'
 import { initOffline, routeChanged } from './offline.js';
 import { syncScore } from './leaderboard.js';
 import { openJoinSheet } from './lb-join.js';
+import { shouldShowInstallGuide, openInstallGuide } from './install-guide.js';
 
 // tab: which nav item lights up. param: name of the first path segment after the route.
 // sheet: rendered in a sheet over the current page instead of replacing it.
@@ -225,8 +226,10 @@ applyTheme(ctx.state.settings.theme);
 buildNav();
 if (!location.hash || location.hash === '#' || location.hash === '#/') history.replaceState(null, '', '#/home');
 window.addEventListener('hashchange', route);
-// A brand-new student tells us their name, then picks their event, before seeing Home.
+// On iPhone in Safari, the install video comes first (an installed app keeps its own data).
+// A brand-new student then tells us their name, then picks their event, before seeing Home.
 // Nothing is saved until the event is picked, so closing the app midway starts over.
+function start() {
 if (firstLaunch) {
   showNameStep({ step: 'Step 1 of 2', onDone(name) {
     ctx.state.settings.name = name;
@@ -252,6 +255,9 @@ if (firstLaunch) {
     } });
   });
 }
+}
+if (shouldShowInstallGuide()) openInstallGuide(start);
+else start();
 
 /* ---------- Offline support ---------- */
 // One-time, unobtrusive confirmation that everything is saved for offline use.
