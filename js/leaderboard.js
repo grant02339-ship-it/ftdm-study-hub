@@ -1,5 +1,6 @@
 // Chapter leaderboard: pure helpers (payload, throttle, sorting) and the network calls.
 // Sharing is opt-in. Every network failure is silent for syncing and returned as a result for the screen.
+import { checkName } from './namefilter.js';
 import { LEADERBOARD_URL } from './config.js';
 import { cleanName, cleanBoardRow, ensureLeaderboardId, localDay } from './store.js';
 import { readiness } from './progress.js';
@@ -42,7 +43,7 @@ export function boardName(state) {
 export function buildPayload(state, eventId, readinessPct, now) {
   const name = boardName(state);
   const lb = state.leaderboard || {};
-  if (!name || !ID_RE.test(lb.id || '')) return null;
+  if (!name || !ID_RE.test(lb.id || '') || !checkName(name).ok) return null;
   const pct = Number.isFinite(readinessPct) ? Math.max(0, Math.min(100, Math.round(readinessPct))) : 0;
   let total = 0;
   for (const a of Object.values(state.answers || {})) total += Number.isInteger(a && a.n) ? a.n : 0;

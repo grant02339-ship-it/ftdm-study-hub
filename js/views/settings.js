@@ -1,5 +1,6 @@
 // Settings (#/settings): level, conference, theme, narration, backup/restore/reset, about.
 // Everything the user types is set as a property or text (never parsed as markup).
+import { nameError } from '../namefilter.js';
 import { h, icon, box, openSheet } from '../ui.js';
 import { saveState, exportState, importState, defaultState, BAD_BACKUP, cleanName, ensureLeaderboardId } from '../store.js';
 import { LEVEL_NAME } from './learn.js';
@@ -76,10 +77,16 @@ export function render(el, params, ctx) {
   const nick = h('input', { class: 'st-input', id: 'st-nick', type: 'text', maxlength: '20', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', placeholder: ctx.state.settings.name || 'Nickname', enterkeyhint: 'done' });
   nick.value = lb.nickname || '';
   nick.addEventListener('input', () => { lb.nickname = cleanName(nick.value.replace(/[<>]/g, '')); ctx.save(); });
-  nick.addEventListener('change', () => { nick.value = lb.nickname; if (lb.optIn) ctx.syncScore({ force: true }); });
+  nick.addEventListener('change', () => {
+    nick.value = lb.nickname;
+    const problem = lb.nickname ? nameError(lb.nickname) : '';
+    if (problem) { showLb(problem, 'bad'); nick.focus(); return; }
+    if (lb.optIn) ctx.syncScore({ force: true });
+  });
   lbSwitch.addEventListener('change', async () => {
     if (lbSwitch.checked) {
       if (!boardName(ctx.state)) { lbSwitch.checked = false; showLb('Add a nickname first, so others can see who you are.', 'bad'); nick.focus(); return; }
+      if (nameError(boardName(ctx.state))) { lbSwitch.checked = false; showLb(nameError(boardName(ctx.state)), 'bad'); nick.focus(); return; }
       lb.optIn = true; lb.asked = true; lb.lastSent = 0;
       ensureLeaderboardId(ctx.state);
       ctx.save();

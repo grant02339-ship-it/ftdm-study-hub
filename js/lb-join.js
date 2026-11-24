@@ -1,8 +1,9 @@
-// "Join the chapter leaderboard?" sheet. Shown once on Home, and again from the leaderboard screen.
+// "Join the worldwide leaderboard?" sheet. Shown once on Home, and again from the leaderboard screen.
 // The nickname is only ever read from the input and shown as text.
 import { h, icon, openSheet } from './ui.js';
 import { cleanName, ensureLeaderboardId } from './store.js';
 import { boardName } from './leaderboard.js';
+import { nameError } from './namefilter.js';
 
 export const SHARED_TEXT = 'Your first name or a nickname, your event, readiness %, questions this week and study streak. Nothing else. Anyone using the app can see it, so a nickname is a good idea.';
 
@@ -18,7 +19,8 @@ export function openJoinSheet(ctx, onDone) {
   const err = h('p', { class: 'lbj-err', role: 'alert', hidden: true }, 'Add a nickname to join.');
   const join = () => {
     const name = cleanName(input.value.replace(/[<>]/g, ''));
-    if (!name) { err.hidden = false; input.focus(); return; }
+    const problem = name ? nameError(name) : 'Add a nickname to join.';
+    if (problem) { err.textContent = problem; err.hidden = false; input.focus(); return; }
     const lb = ctx.state.leaderboard;
     lb.nickname = name;
     lb.optIn = true;
