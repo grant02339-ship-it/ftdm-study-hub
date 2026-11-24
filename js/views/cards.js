@@ -1,8 +1,9 @@
 // Cards tab (#/cards): deck picker, 3D flip card, Know / Don't know (buttons, keys, swipe), progress bar.
-import { h, icon, reducedMotion } from '../ui.js';
+import { h, icon, box, reducedMotion } from '../ui.js';
 import { createSession, isKnown, mark } from '../deck.js';
 import { haptic } from './quiz.js';
-import { noteStudy } from '../practice-lib.js';
+import { noteStudy, ymd } from '../practice-lib.js';
+import { notePlanProgress } from '../foryou.js';
 
 let deck = 'all'; // remembered for the session
 const SWIPE_PX = 90, SWIPE_VELOCITY = 0.5; // distance or px/ms that commits a swipe
@@ -36,8 +37,10 @@ export function render(el, params, ctx) {
   const live = h('p', { class: 'sr-only', 'aria-live': 'polite' });
 
   el.append(h('h1', { class: 'lt' }, 'Cards'),
-    h('div', { class: 'fc-decks', role: 'toolbar', 'aria-label': 'Decks' }, chips),
-    note, line, stage, rate, live);
+    box('Decks', `${decks.length - 1} ${decks.length === 2 ? 'area' : 'areas'}`, [
+      h('div', { class: 'fc-decks', role: 'toolbar', 'aria-label': 'Decks' }, chips),
+      line], { class: 'fc-deckbox' }),
+    note, stage, rate, live);
 
   let session = null, card = null, flipped = false, flipEl = null, busy = false;
 
@@ -157,6 +160,7 @@ export function render(el, params, ctx) {
     const done = card;
     mark(ctx.state, done.id, knew);
     noteStudy(ctx.state);
+    notePlanProgress(ctx.state, ymd(new Date()));
     ctx.save();
     haptic(10);
     live.textContent = knew ? 'Marked as known.' : 'You’ll see it again soon.';

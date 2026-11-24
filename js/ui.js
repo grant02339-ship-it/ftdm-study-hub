@@ -41,6 +41,10 @@ const ICONS = {
   search: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>`,
   alert: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></svg>`,
   play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 001.5.86l10.4-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg>',
+  foryou: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M10 3.5l1.6 4.6a3 3 0 001.8 1.8L18 11.5l-4.6 1.6a3 3 0 00-1.8 1.8L10 19.5l-1.6-4.6a3 3 0 00-1.8-1.8L2 11.5l4.6-1.6a3 3 0 001.8-1.8z"/><path d="M18.5 2.5v4M16.5 4.5h4M19 16.5v3M17.5 18h3"/></svg>`,
+  flame: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M12 21c-3.9 0-7-2.8-7-6.6 0-2.7 1.6-4.6 3.2-6.3.4 1.7 1.4 2.9 2.6 3.4C10.4 8 11.6 5 14.3 3c.2 3 1.7 4.6 3 6.2 1.1 1.4 1.7 3 1.7 5.2C19 18.2 15.9 21 12 21z"/><path d="M12 21c-1.7 0-3-1.3-3-3 0-1.9 1.6-2.8 2.4-4.4.9 1.2 3.6 2.2 3.6 4.4 0 1.7-1.3 3-3 3z"/></svg>`,
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.2 4.2L18.5 7.5"/></svg>',
+  clock: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>`,
   spark: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M4 18l5-6 4 3 7-9"/><circle cx="20" cy="6" r="1.2" fill="currentColor"/></svg>`,
   back: '<svg viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L2 8l6 6"/></svg>',
   chevron: '<svg viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5L6.5 7l-5 5.5"/></svg>',
@@ -74,6 +78,16 @@ const ICONS = {
   QM: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>`,
   PJ: `<svg viewBox="0 0 24 24" ${STROKE}><rect x="3" y="4" width="10" height="4" rx="1"/><rect x="8" y="10" width="13" height="4" rx="1"/><rect x="5" y="16" width="9" height="4" rx="1"/></svg>`,
 };
+
+// A boxed section: header row (title left, small muted meta right) inside the box, then the content.
+// title/meta may be strings or nodes; opts: {class, label (aria-label when there's no title), icon}.
+export function box(title, meta, kids, opts) {
+  opts = opts || {};
+  const head = title || meta ? h('div', { class: 'box-h' },
+    h(opts.tag || 'h2', { class: 'box-t' }, opts.icon ? icon(opts.icon) : null, title || ''),
+    meta != null && meta !== '' ? h('span', { class: 'box-m' }, meta) : null) : null;
+  return h('section', { class: `box${opts.class ? ' ' + opts.class : ''}`, 'aria-label': !title ? opts.label : null }, head, kids);
+}
 
 export function icon(name) {
   const svg = fromMarkup(ICONS[name] || ICONS.lesson);

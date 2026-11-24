@@ -1,5 +1,5 @@
 // Practice tab (#/practice): Quick 10, mistake review, mock exam, quiz by area, exam history.
-import { h, icon } from '../ui.js';
+import { h, icon, box } from '../ui.js';
 import { LEVEL_NAME } from './learn.js';
 import { glyph } from './quiz.js';
 import { examEvent, NO_EXAM_NOTE } from '../event.js';
@@ -46,10 +46,11 @@ export function render(el, params, ctx) {
     examSub = `${answered} of ${restored.questions.length} answered · ${formatClock(restored.exam.remainingMs)} left`;
   }
 
-  const quick = h('div', { class: 'group' },
+  const quick = box('Quick start', null, [h('div', { class: 'group' },
     row('#/quiz?mode=quick&n=10', icon('practice'), 'Quick 10', `Mixed questions, weighted like the ${lvl} exam`),
     mistakeRow,
-    ...(data.EVENT.noExam ? [] : [row('#/exam', icon('exam'), examTitle, examSub, restored ? h('span', { class: 'pr-live', 'aria-hidden': 'true' }) : null)]));
+    ...(data.EVENT.noExam ? [] : [row('#/exam', icon('exam'), examTitle, examSub, restored ? h('span', { class: 'pr-live', 'aria-hidden': 'true' }) : null)])),
+    data.EVENT.noExam ? h('p', { class: 'box-note' }, NO_EXAM_NOTE) : null]);
 
   // Quiz by area
   const counts = {};
@@ -82,15 +83,12 @@ export function render(el, params, ctx) {
       return row(`#/exam?result=${i}`, glyph('check'), shortDate(e.date), `${lv} · ${e.score ?? '—'} of ${e.total ?? 100} correct`,
         h('span', { class: `val${pct >= 70 ? ' hot' : ''}` }, `${pct}%`));
     }))
-    : h('p', { class: 'note pr-empty' }, 'Your mock exam scores will show up here.');
+    : h('p', { class: 'box-note pr-empty' }, 'Your mock exam scores will show up here.');
 
   el.append(
     h('h1', { class: 'lt' }, 'Practice'),
     h('p', { class: 'sub' }, `${QUESTIONS.length} questions across ${Object.keys(counts).length} areas`),
     quick,
-    ...(data.EVENT.noExam ? [h('p', { class: 'note' }, NO_EXAM_NOTE)] : []),
-    h('div', { class: 'pr-gh' }, h('h2', { class: 'gh' }, 'Quiz by area'), seg),
-    h('div', { class: 'group' }, [...areaRows, ...soon]),
-    h('h2', { class: 'gh' }, 'Mock exam history'),
-    historyBody);
+    box('Quiz by area', seg, h('div', { class: 'group' }, [...areaRows, ...soon]), { class: 'pr-areas' }),
+    box('Mock exam history', history.length ? `${history.length} taken` : null, historyBody));
 }

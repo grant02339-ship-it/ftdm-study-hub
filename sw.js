@@ -1,7 +1,7 @@
 // Cache-first service worker. The precache list is generated: run
 // `python3 scripts/build_precache.py` after changing any file under app/.
 /*PRECACHE_START*/
-const VERSION = "31dfd686b7dd";
+const VERSION = "f247d833f243";
 const PRECACHE = [
   "./index.html",
   "./css/app.css",
@@ -152,6 +152,7 @@ const PRECACHE = [
   "./js/explainers/ratios.js",
   "./js/explainers/supplydemand.js",
   "./js/explainers/tvm.js",
+  "./js/foryou.js",
   "./js/offline.js",
   "./js/picker.js",
   "./js/player-timeline.js",
@@ -164,6 +165,7 @@ const PRECACHE = [
   "./js/version.js",
   "./js/views/cards.js",
   "./js/views/exam.js",
+  "./js/views/foryou.js",
   "./js/views/home.js",
   "./js/views/learn.js",
   "./js/views/lesson.js",
@@ -171,6 +173,7 @@ const PRECACHE = [
   "./js/views/quiz.js",
   "./js/views/settings.js",
   "./js/views/watch.js",
+  "./js/welcome.js",
   "./manifest.webmanifest",
   "./media/v-bl-contracts-0.m4a",
   "./media/v-bl-contracts-1.m4a",

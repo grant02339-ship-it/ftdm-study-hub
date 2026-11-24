@@ -4,6 +4,8 @@
 // its own clock inside the stage, so scrubbing lands on exactly the frame playback would show.
 import { h, icon, reducedMotion } from '../ui.js';
 import { quizHref } from './learn.js';
+import { markWatched, notePlanProgress } from '../foryou.js';
+import { ymd } from '../practice-lib.js';
 import {
   timeline, sceneAt, canNarrate, pickVoice, captionChunks, chunkAtChar, TTS_RATE,
   wordSpans, wordTimes, wordIndexAt, wordIndexAtChar, feedOrder, tapZone,
@@ -337,6 +339,8 @@ function createReel(video, shared) {
       }
     }
     t = Math.min(nt, tl.total);
+    // Watching 80% of a reel counts as finishing it (For you and Today's plan stop suggesting it).
+    if (!reel.counted && t >= tl.total * 0.8) { reel.counted = true; if (shared.onWatched) shared.onWatched(video.id); }
     const ni = sceneAt(tl, t).index;
     if (ni !== ci && t < tl.total) speak(ni);
     if (t >= tl.total) {
@@ -433,6 +437,11 @@ function mountFeed(el, list, startIndex, ctx) {
     cancelAuto: null, audioOwner: null, blocked: false, unlocked: false, nextClip: '',
     player: new Audio(), preloader: new Audio(),
     setBlocked: () => {},
+    onWatched(id) {
+      if (!ctx.state || !ctx.state.answers || !markWatched(ctx.state, id)) return;
+      notePlanProgress(ctx.state, ymd(new Date()));
+      try { if (ctx.save) ctx.save(); } catch (e) { /* ignore */ }
+    },
     preload(url) { if (this.preloader.src !== url) { this.preloader.src = url; try { this.preloader.load(); } catch (e) { /* ignore */ } } },
   };
   shared.player.preload = 'auto';
@@ -537,6 +546,7 @@ function mountFeed(el, list, startIndex, ctx) {
   shared.cancelAuto = cancelAuto;
   function onReelEnd(r) {
     if (r !== reel || destroyed) return;
+    shared.onWatched(r.video.id);
     cancelAuto();
     if (index >= list.length - 1) return;
     reel.armUpNext(true);

@@ -11,18 +11,18 @@
 .ev-brand img{width:64px;height:64px;border-radius:16px;margin:0 0 28px;box-shadow:0 10px 30px -8px rgba(240,122,52,.45)}
 .ev-h{font:700 36px/1.08 var(--round);letter-spacing:-.025em}
 .ev-lede{color:var(--text2);font-size:17px;margin:10px 0 28px;max-width:34ch}
-.ev-list{display:grid;gap:14px}
+.ev-list{display:grid;gap:10px}
 .ev-card{
   display:flex;align-items:center;gap:16px;width:100%;text-align:left;
-  padding:20px 18px;border-radius:26px;background:var(--surface);
-  box-shadow:inset 0 0 0 1.5px transparent;
+  padding:18px 16px;border-radius:var(--r-box);background:var(--box);
+  box-shadow:inset 0 0 0 .5px var(--line);
   transition:transform .25s var(--spring), box-shadow .2s ease, background .2s ease;
 }
 .ev-card:active{transform:scale(.975)}
 @media (hover:hover){.ev-card:hover{box-shadow:inset 0 0 0 1.5px var(--orange)}}
 .ev-card.on{background:var(--orange-dim);box-shadow:inset 0 0 0 2px var(--orange)}
-.ev-card:focus-visible{outline-offset:3px;border-radius:26px}
-.ev-ico{flex:none;width:52px;height:52px;border-radius:16px;background:var(--orange);color:var(--on-orange);display:grid;place-items:center}
+.ev-card:focus-visible{outline-offset:3px;border-radius:var(--r-box)}
+.ev-ico{flex:none;width:48px;height:48px;border-radius:14px;background:var(--orange);color:var(--on-orange);display:grid;place-items:center}
 .ev-ico svg{width:26px;height:26px}
 .ev-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .ev-name{font:700 20px/1.2 var(--round);letter-spacing:-.01em}
@@ -57,3 +57,25 @@
 .ev-eyebrow{display:inline-block;margin:0 0 8px 4px;padding:3px 10px;border-radius:var(--r-pill);background:var(--orange);color:var(--on-orange);font:700 12px/1.4 var(--round);letter-spacing:.02em}
 .ev-new .cta{margin-top:20px}
 .ev-group{margin:18px 4px 8px}
+
+/* Onboarding step eyebrow and the name step. */
+.ev-step{display:inline-block;margin:0 0 12px;padding:4px 10px;border-radius:var(--r-pill);background:var(--orange-dim);color:var(--orange);font:700 12px/1.3 var(--round);letter-spacing:.02em}
+.nm-welcome .ev-welcome-in{max-width:440px}
+.nm-form{display:block}
+.nm-field{
+  position:relative;display:flex;align-items:center;height:64px;padding:0 64px 0 20px;border-radius:20px;
+  background:var(--box);border:.5px solid var(--line);transition:border-color .2s ease, box-shadow .2s ease;cursor:text;
+}
+.nm-field:focus-within{border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-dim)}
+.nm-input{
+  flex:1;min-width:0;height:100%;border:0;background:none;outline:none;color:var(--text);
+  font:600 24px var(--round);letter-spacing:-.01em;-webkit-appearance:none;appearance:none;
+}
+.nm-input::placeholder{color:var(--text2);opacity:.6;font-weight:500}
+.nm-count{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--text2);opacity:.8}
+.nm-note{display:flex;align-items:center;gap:6px;margin:10px 4px 0;color:var(--text2);font-size:13px}
+.nm-note::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--good);flex:none}
+.nm-go{margin-top:28px}
+.nm-go:disabled{opacity:.4;cursor:default;transform:none;filter:none}
+.nm-skip{display:block;margin:14px auto 0;padding:8px 14px;border-radius:var(--r-pill);color:var(--text2);font:600 15px var(--round)}
+@media (hover:hover){.nm-skip:hover{color:var(--text)}}

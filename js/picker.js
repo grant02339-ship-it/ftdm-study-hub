@@ -54,14 +54,16 @@ function eventCards(selectedId, onPick) {
 }
 
 // Full-screen first-launch picker. Calls onPick(event) once, then removes itself.
-export function showEventPicker(onPick) {
+// opts: {step: eyebrow such as 'Step 2 of 2', name: the student's first name for the lede}.
+export function showEventPicker(onPick, { step = '', name = '' } = {}) {
   const app = document.querySelector('.app');
   if (app) app.inert = true;
   const layer = h('div', { class: 'ev-welcome', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'ev-title' },
     h('div', { class: 'ev-welcome-in' },
       h('div', { class: 'ev-brand' }, brandMark()),
+      step ? h('p', { class: 'ev-step' }, step) : null,
       h('h1', { id: 'ev-title', class: 'ev-h' }, 'Choose your event'),
-      h('p', { class: 'ev-lede' }, 'We’ll tailor lessons, practice and mock exams to it. You can change it anytime in Settings.'),
+      h('p', { class: 'ev-lede' }, `${name ? `Nice to meet you, ${name}. ` : ''}We’ll tailor lessons, practice and mock exams to it. You can change it anytime in Settings.`),
       h('div', { class: 'ev-list' }, eventCards(null, ev => {
         if (app) app.inert = false;
         layer.classList.add('out');

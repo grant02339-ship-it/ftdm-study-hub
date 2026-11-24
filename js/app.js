@@ -4,13 +4,15 @@ import * as data from '../data/index.js';
 import { loadState, saveState, isFirstLaunch, needsEventPrompt } from './store.js';
 import { currentEvent, eventData, setEvent } from './event.js';
 import { showEventPicker, openEventAnnouncement, switchEvent } from './picker.js';
+import { showNameStep } from './welcome.js';
 import { h, icon, brandMark, applyTheme, openSheet, placeholder } from './ui.js';
 import { initOffline, routeChanged } from './offline.js';
 
 // tab: which nav item lights up. param: name of the first path segment after the route.
 // sheet: rendered in a sheet over the current page instead of replacing it.
 export const ROUTES = {
-  home:     { title: 'Today', tab: 'home' },
+  home:     { title: 'Home', tab: 'home' },
+  foryou:   { title: 'For you', tab: 'foryou' },
   learn:    { title: 'Learn', tab: 'learn', param: 'area' },
   lesson:   { title: 'Lesson', tab: 'learn', param: 'id', sheet: true },
   watch:    { title: 'Video lesson', tab: 'learn', param: 'id', sheet: true },
@@ -21,7 +23,7 @@ export const ROUTES = {
   settings: { title: 'Settings', tab: 'settings' },
 };
 const NAV = [
-  ['home', 'Home'], ['learn', 'Learn'], ['practice', 'Practice'], ['cards', 'Cards'],
+  ['home', 'Home'], ['learn', 'Learn'], ['foryou', 'For you'], ['practice', 'Practice'], ['cards', 'Cards'],
 ];
 
 // '#/learn/FI?x=1' -> {name:'learn', params:{area:'FI', x:'1'}, key:'learn/FI?x=1'}
@@ -68,9 +70,10 @@ function buildNav() {
   }
   sidebar.append(
     h('div', { class: 'brand' }, brandMark(), h('span', null, 'DECA Study Buddy')),
-    ...NAV.map(([id, label]) => h('a', { class: 'side-link', href: `#/${id}`, dataset: { tab: id } }, icon(id), h('span', null, label))),
-    h('div', { class: 'side-sep', role: 'separator' }),
-    h('a', { class: 'side-link', href: '#/settings', dataset: { tab: 'settings' } }, icon('settings'), h('span', null, 'Settings')),
+    h('div', { class: 'side-box' },
+      ...NAV.map(([id, label]) => h('a', { class: 'side-link', href: `#/${id}`, dataset: { tab: id } }, icon(id), h('span', null, label)))),
+    h('div', { class: 'side-box' },
+      h('a', { class: 'side-link', href: '#/settings', dataset: { tab: 'settings' } }, icon('settings'), h('span', null, 'Settings'))),
   );
 }
 
@@ -202,12 +205,28 @@ applyTheme(ctx.state.settings.theme);
 buildNav();
 if (!location.hash || location.hash === '#' || location.hash === '#/') history.replaceState(null, '', '#/home');
 window.addEventListener('hashchange', route);
-// A brand-new student picks their event before seeing Home.
-if (firstLaunch) showEventPicker(ev => { ctx.state.settings.seenEventPrompt = 1; ctx.setEvent(ev.id); route(); });
-else {
+// A brand-new student tells us their name, then picks their event, before seeing Home.
+// Nothing is saved until the event is picked, so closing the app midway starts over.
+if (firstLaunch) {
+  showNameStep({ step: 'Step 1 of 2', onDone(name) {
+    ctx.state.settings.name = name;
+    ctx.state.settings.askedName = 1;
+    showEventPicker(ev => { ctx.state.settings.seenEventPrompt = 1; ctx.setEvent(ev.id); route(); }, { step: 'Step 2 of 2', name });
+  } });
+} else {
+  // Existing students without a name are asked once, then see the one-time event sheet if it's pending.
+  const needName = !ctx.state.settings.name && !ctx.state.settings.askedName;
   route().then(() => {
-    // Existing students see the event sheet once, after Home has drawn.
-    if (prompt) openEventAnnouncement(ctx, () => route());
+    const announce = () => { if (prompt) openEventAnnouncement(ctx, () => route()); };
+    if (!needName) { announce(); return; }
+    ctx.state.settings.askedName = 1;
+    ctx.save();
+    showNameStep({ onDone(name) {
+      ctx.state.settings.name = name;
+      ctx.save();
+      if (parseHash(location.hash).name === 'home') route();
+      announce();
+    } });
   });
 }
 

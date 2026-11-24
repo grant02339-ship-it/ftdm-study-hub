@@ -1,9 +1,10 @@
 // Quiz sheet (#/quiz?…): one question per screen, instant feedback, summary with score ring.
 // URL contract: pis=<codes>&n= | area=<ID>&n= | mode=mistakes | mode=quick | ids=<qids>
-import { h, icon, tick, reducedMotion } from '../ui.js';
+import { h, icon, box, tick, reducedMotion } from '../ui.js';
 import { shuffleChoices } from '../exam.js';
 import { recordAnswer } from '../store.js';
-import { quizQuestions, noteStudy } from '../practice-lib.js';
+import { quizQuestions, noteStudy, ymd } from '../practice-lib.js';
+import { markPlanDone } from '../foryou.js';
 
 export const KEYS = 'ABCD';
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -117,10 +118,10 @@ export function render(el, params, ctx) {
         h('p', null, h('a', { class: 'link', href: '#/practice' }, 'Go to Practice'))));
     return;
   }
-  runQuiz(el, questions, title, ctx);
+  runQuiz(el, questions, title, ctx, params.plan === 'drill' ? 'drill' : null);
 }
 
-function runQuiz(el, questions, title, ctx) {
+function runQuiz(el, questions, title, ctx, planTask = null) {
   const { AREAS, piByCode } = ctx.data;
   const n = questions.length;
   const results = [];
@@ -199,8 +200,9 @@ function runQuiz(el, questions, title, ctx) {
 
     current = { choose, answered: () => answered, advance };
     swap(h('div', { class: 'qz-q' },
-      area ? h('span', { class: 'qz-area' }, area.name) : null,
-      h('h2', { class: 'qz-stem' }, q.stem),
+      h('div', { class: 'box qz-qbox' },
+        area ? h('div', { class: 'qz-qtop' }, h('span', { class: 'qz-area' }, area.name)) : null,
+        h('h2', { class: 'qz-stem' }, q.stem)),
       h('div', { class: 'qz-choices', role: 'group', 'aria-label': 'Answer choices' }, buttons),
       why, hint, next));
   }
@@ -220,6 +222,8 @@ function runQuiz(el, questions, title, ctx) {
       s.total++; if (r.correct) s.correct++;
     }
     const missed = results.filter(r => !r.correct).map(r => r.q);
+    // A drill started from Today's plan checks off its task when it's finished.
+    if (planTask && markPlanDone(ctx.state, ymd(new Date()), planTask)) ctx.save();
     head.classList.add('done');
     count.textContent = `${n} / ${n}`;
     live.textContent = `Quiz complete. ${right} of ${n} correct.`;
@@ -229,8 +233,7 @@ function runQuiz(el, questions, title, ctx) {
         h('div', { class: 'ringmeta' },
           h('div', null, h('b', null, verdict(pct)), `${right} of ${n} correct`),
           h('div', null, h('b', null, String(missed.length)), missed.length === 1 ? 'Mistake' : 'Mistakes'))),
-      h('h2', { class: 'gh' }, 'Results by area'),
-      h('div', { class: 'group' }, areaResultRows(byArea, AREAS)),
+      box('Results by area', `${right} of ${n}`, h('div', { class: 'group' }, areaResultRows(byArea, AREAS))),
       missed.length
         ? h('button', { class: 'cta', type: 'button', onclick: () => runQuiz(el, missed, 'Review mistakes', ctx) },
           `Review ${missed.length === 1 ? 'mistake' : 'mistakes'}`)

@@ -10,8 +10,13 @@ export function defaultState() {
     cards: {},     // cid -> {known, seen, last (ms)}
     exams: [],     // [{date, level, score, byArea}]
     activeExam: null,
-    settings: { event: DEFAULT_EVENT, level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25, seenEventPrompt: 0 },
+    settings: { event: DEFAULT_EVENT, level: 'district', confDate: null, theme: 'auto', narrate: true, reelSpeed: 1.25, seenEventPrompt: 0, name: '', askedName: 0 },
     streak: { count: 0, lastDay: null },
+    watched: {},      // videoId -> ms when the reel was finished (ended or 80% viewed)
+    read: {},         // lessonId -> ms the lesson was last opened
+    readinessLog: {}, // 'YYYY-MM-DD' -> readiness % that day (last 60 days)
+    planDone: {},     // 'YYYY-MM-DD' -> [task ids finished from Today's plan]
+    plan: null,       // {date, event, tasks:[{id, title, sub, min, href, n?, video?, lesson?}]} for today
   };
 }
 
@@ -46,6 +51,49 @@ const fixCard = c => {
   return { known, seen: nat(c.seen), last: fin(c.last) && c.last >= 0 ? c.last : 0 };
 };
 const fixArea = s => (isObj(s) && fin(s.correct) && fin(s.total) ? { correct: s.correct, total: s.total } : null);
+const stamps = v => (isObj(v) ? mapEntries(v, t => (fin(t) && t >= 0 ? t : null)) : {});
+const PLAN_IDS = ['drill', 'cards', 'reel', 'read'];
+
+// The student's first name: a string of at most 20 characters, control characters removed,
+// inner whitespace collapsed and trimmed. Anything else becomes ''. Always rendered as text.
+export function cleanName(v) {
+  if (typeof v !== 'string') return '';
+  // eslint-disable-next-line no-control-regex
+  const s = v.replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2066-\u2069\uFEFF]/g, '').replace(/\s+/g, ' ').trim();
+  return [...s].slice(0, 20).join('').trim();
+}
+
+function fixLog(v) {
+  if (!isObj(v)) return {};
+  const out = {};
+  for (const [k, pct] of Object.entries(v)) if (isDay(k) && fin(pct)) out[k] = Math.max(0, Math.min(100, Math.round(pct)));
+  return out;
+}
+function fixPlanDone(v) {
+  if (!isObj(v)) return {};
+  const out = {};
+  for (const [k, ids] of Object.entries(v)) {
+    if (!isDay(k)) continue;
+    const ok = [...new Set(strArr(ids).filter(id => PLAN_IDS.includes(id)))];
+    if (ok.length) out[k] = ok;
+  }
+  return out;
+}
+const cleanStr = (v, max) => (typeof v === 'string' ? v.slice(0, max) : '');
+function fixPlan(p) {
+  if (!isObj(p) || !isDay(p.date) || !Array.isArray(p.tasks)) return null;
+  const tasks = p.tasks.filter(t => isObj(t) && PLAN_IDS.includes(t.id) && typeof t.href === 'string' && t.href.startsWith('#/'))
+    .slice(0, 3).map(t => {
+      const out = { id: t.id, title: cleanStr(t.title, 80), sub: cleanStr(t.sub, 120), min: nat(t.min), href: t.href.slice(0, 600) };
+      if (Number.isInteger(t.n) && t.n > 0) out.n = t.n;
+      if (typeof t.video === 'string') out.video = t.video.slice(0, 80);
+      if (typeof t.lesson === 'string') out.lesson = t.lesson.slice(0, 80);
+      return out;
+    });
+  if (!tasks.length) return null;
+  return { date: p.date, event: EVENT_IDS.includes(p.event) ? p.event : DEFAULT_EVENT, tasks };
+}
+
 const strArr = v => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : []);
 
 // A history record needs a numeric score and total; everything else is coerced to a safe shape.
@@ -83,6 +131,8 @@ function fixSettings(s) {
     narrate: typeof s.narrate === 'boolean' ? s.narrate : d.narrate,
     reelSpeed: fin(s.reelSpeed) && s.reelSpeed >= 0.75 && s.reelSpeed <= 2 ? s.reelSpeed : d.reelSpeed,
     seenEventPrompt: s.seenEventPrompt === 1 || s.seenEventPrompt === true ? 1 : 0,
+    name: cleanName(s.name),
+    askedName: s.askedName === 1 || s.askedName === true ? 1 : 0,
   };
   if (typeof s.confName === 'string') out.confName = s.confName.slice(0, 60);
   return out;
@@ -103,6 +153,11 @@ function normalize(raw) {
     activeExam: isObj(raw.activeExam) ? raw.activeExam : null,
     settings: fixSettings(raw.settings),
     streak: { count: lastDay ? nat(st.count) : 0, lastDay },
+    watched: stamps(raw.watched),
+    read: stamps(raw.read),
+    readinessLog: fixLog(raw.readinessLog),
+    planDone: fixPlanDone(raw.planDone),
+    plan: fixPlan(raw.plan),
   };
 }
 

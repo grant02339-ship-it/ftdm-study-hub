@@ -1,9 +1,12 @@
-// Home: readiness ring, last mock + streak, conference countdown, study next, flashcards, mock exam.
-import { h, icon, reducedMotion } from '../ui.js';
-import { readiness, weakest, areaMastery } from '../progress.js';
-import { unknownCards } from '../deck.js';
+// Home: greeting + event, readiness ring with weekly change and countdown, Today's plan, streak and last mock.
+import { h, icon, box, reducedMotion } from '../ui.js';
+import { readiness } from '../progress.js';
 import { examEvent, NO_EXAM_NOTE } from '../event.js';
 import { eventChip } from '../picker.js';
+import { restoreExam, examProgress, formatClock } from '../practice-lib.js';
+import {
+  greeting, isNewStudent, ensurePlan, notePlanProgress, isPlanDone, nextTask, planMinutes, logReadiness, weeklyDelta,
+} from '../foryou.js';
 
 const LEVEL = {
   district: { exam: 'district', meet: 'Districts' },
@@ -17,7 +20,6 @@ let ringPlayed = false;
 const pad = n => String(n).padStart(2, '0');
 export const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const dayNum = s => { const [y, m, d] = s.split('-').map(Number); return Math.round(Date.UTC(y, m - 1, d) / 86400000); };
-const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 
 // "States in 41 days" | "States is tomorrow" | "States is today" | null (unset/past/invalid)
 export function countdown(confDate, level, today) {
@@ -36,18 +38,6 @@ export function liveStreak(streak, today) {
   return dayNum(today) - dayNum(streak.lastDay) <= 1 ? streak.count : 0;
 }
 
-// 3 weakest areas once there's data; otherwise the heaviest areas on the blueprint.
-export function studyNext(state, level, questions, areas, blueprint) {
-  const answered = Object.keys(state.answers).length > 0;
-  const ids = answered ? weakest(state, 3, questions, areas) : [];
-  const byWeight = areas
-    .map((a, i) => ({ id: a.id, i, w: blueprint[a.id] ? blueprint[a.id][level] : 0 }))
-    .sort((x, y) => y.w - x.w || x.i - y.i)
-    .map(a => a.id);
-  for (const id of byWeight) { if (ids.length >= 3) break; if (!ids.includes(id)) ids.push(id); }
-  return ids;
-}
-
 function playRingOnce() {
   if (ringPlayed) return false;
   ringPlayed = true;
@@ -58,7 +48,7 @@ function playRingOnce() {
   return !reducedMotion();
 }
 
-function ring(pct, examName) {
+function ring(pct, label) {
   const svgNS = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgNS, 'svg');
   svg.setAttribute('viewBox', '0 0 132 132');
@@ -75,7 +65,7 @@ function ring(pct, examName) {
   const fill = mk('fill');
   fill.style.strokeDasharray = String(C);
   const num = h('b', null, '0%');
-  const el = h('div', { class: 'ring', role: 'img', 'aria-label': `${pct}% ready for the ${examName} exam` },
+  const el = h('div', { class: 'ring', role: 'img', 'aria-label': label },
     svg, h('div', { class: 'ring-num' }, h('div', null, num, h('span', null, 'ready'))));
 
   const target = C * (1 - pct / 100);
@@ -103,77 +93,103 @@ function ring(pct, examName) {
   return el;
 }
 
-function row(href, iconName, title, sub, trailing) {
-  return h('a', { class: 'row', href },
-    h('div', { class: 'ico' }, icon(iconName)),
-    h('div', { class: 't' }, title, sub ? h('small', null, sub) : null),
-    trailing,
-    h('span', { class: 'chev', 'aria-hidden': 'true' }, icon('chevron')));
+const chev = () => h('span', { class: 'chev', 'aria-hidden': 'true' }, icon('chevron'));
+
+function tile(href, iconName, value, label, extra = '') {
+  const kids = [h('span', { class: 'tile-ico', 'aria-hidden': 'true' }, icon(iconName)),
+    h('b', { class: 'tile-v num' }, value), h('span', { class: 'tile-l' }, label)];
+  return href ? h('a', { class: `box tile${extra}`, href }, kids) : h('div', { class: `box tile${extra}` }, kids);
 }
 
 export function render(el, params, ctx) {
   const { state, data } = ctx;
-  const { AREAS, BLUEPRINT, QUESTIONS, CARDS } = data;
+  const { QUESTIONS, BLUEPRINT, CARDS } = data;
   const level = LEVEL[state.settings.level] ? state.settings.level : 'district';
   const examName = LEVEL[level].exam;
-  const today = ymd(new Date());
-
-  // Title row with the phone-only settings gear.
-  const titleRow = h('div', { class: 'lt-row' },
-    h('h1', { class: 'lt' }, 'Today'),
-    h('a', { class: 'icon-btn only-phone', href: '#/settings', 'aria-label': 'Settings' }, icon('settings')));
-
-  const cd = countdown(state.settings.confDate, level, today);
-  const rerender = () => { el.replaceChildren(); render(el, params, ctx); };
-  const sub = h('div', { class: 'sub-chip' }, eventChip(ctx, rerender),
-    cd || h('a', { href: '#/settings' }, 'Set your conference date'));
-
-  // Ring + stats
-  const pct = Math.round(readiness(state, level, QUESTIONS, BLUEPRINT));
-  const mine = state.exams.filter(e => examEvent(e) === data.EVENT.id);
-  const last = mine.length ? mine[mine.length - 1] : null;
-  const lastVal = last ? (last.percent ?? last.score) : null;
-  const streak = liveStreak(state.streak, today);
-  const ringCard = h('section', { class: 'ringwrap', 'aria-label': 'Readiness' },
-    ring(pct, examName),
-    h('div', { class: 'ringmeta' },
-      h('div', null, h('b', null, lastVal == null ? '—' : `${Math.round(lastVal)}%`), 'Last mock exam'),
-      h('div', null, h('b', null, plural(streak, 'day')), 'Study streak')));
-  const answered = Object.keys(state.answers).length > 0;
-  const note = answered ? null : h('p', { class: 'note' }, 'Your ring fills as you answer practice questions.');
-
-  // Study next
-  const ids = studyNext(state, level, QUESTIONS, AREAS, BLUEPRINT);
-  const nameOf = id => (AREAS.find(a => a.id === id) || { name: id }).name;
-  const studyRows = ids.map(id => {
-    const has = QUESTIONS.some(q => q.area === id);
-    const m = has ? areaMastery(state, QUESTIONS, id) : 0;
-    const items = BLUEPRINT[id] ? BLUEPRINT[id][level] : 0;
-    const scored = has && answered;
-    const sub = scored ? `${Math.round(m * 100)}% mastered` : `${plural(items, 'question')} on the ${examName} exam`;
-    // The bar only appears once there's mastery to show; before that the row keeps its width for text.
-    const bar = scored ? h('div', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: `width:${Math.round(m * 100)}%` })) : null;
-    return row(`#/learn/${encodeURIComponent(id)}`, id, nameOf(id), sub, bar);
-  });
-
-  // Flashcards: how many are still to learn
-  const toLearn = unknownCards(CARDS, state).length;
-  const cardSub = !CARDS.length ? 'No flashcards yet'
-    : toLearn ? `${toLearn} to learn` : 'You know them all. Keep them fresh';
-  const cardsRow = row('#/cards', 'cards', 'Study flashcards', cardSub,
-    h('span', { class: `val${toLearn ? ' hot' : ''}` }, String(toLearn)));
-
-  // Mock exam
-  const resume = !!state.activeExam;
-  const cta = h('a', { class: 'cta', href: '#/exam' }, resume ? 'Resume mock exam' : 'Start mock exam');
-  const ctaNote = h('p', { class: 'cta-note' },
-    resume ? 'Pick up where you left off.' : `100 questions, ${examName} blueprint`);
-
+  const now = new Date();
+  const today = ymd(now);
   const noExam = !!data.EVENT.noExam;
-  el.append(...[
-    titleRow, sub, ringCard, note,
-    h('h2', { class: 'gh' }, 'Study next'), h('div', { class: 'group' }, studyRows),
-    h('h2', { class: 'gh' }, 'Flashcards'), h('div', { class: 'group' }, cardsRow),
-    ...(noExam ? [h('p', { class: 'note' }, NO_EXAM_NOTE)] : [cta, ctaNote]),
-  ].filter(Boolean));
+  const rerender = () => { el.replaceChildren(); render(el, params, ctx); };
+  let dirty = false;
+
+  // Header: greeting, event chip, settings.
+  const hi = greeting(state.settings.name, now.getHours(), { fresh: isNewStudent(state), lastDay: state.streak.lastDay, today });
+  const head = h('section', { class: 'box hm-head', 'aria-label': 'Welcome' },
+    h('div', { class: 'hm-hi' },
+      h('h1', { class: 'lt hm-title' }, hi),
+      h('div', { class: 'hm-chip' }, eventChip(ctx, rerender))),
+    h('a', { class: 'icon-btn', href: '#/settings', 'aria-label': 'Settings' }, icon('settings')));
+
+  // Mock exam in progress.
+  let resume = null;
+  const restored = !noExam && state.activeExam ? restoreExam(state.activeExam, QUESTIONS) : null;
+  if (restored) {
+    const { answered } = examProgress(restored.exam);
+    resume = h('a', { class: 'box accent hm-resume', href: '#/exam' },
+      h('div', { class: 'ico' }, icon('exam')),
+      h('div', { class: 't' }, 'Resume mock exam',
+        h('small', null, `${answered} of ${restored.questions.length} answered · ${formatClock(restored.exam.remainingMs)} left`)),
+      h('span', { class: 'pr-live', 'aria-hidden': 'true' }), chev());
+  }
+
+  // Readiness: ring, change this week, countdown.
+  const pct = Math.round(readiness(state, level, QUESTIONS, BLUEPRINT));
+  if (logReadiness(state, today, pct)) dirty = true;
+  const delta = weeklyDelta(state.readinessLog, today);
+  const cd = countdown(state.settings.confDate, level, today);
+  const answered = QUESTIONS.some(q => state.answers[q.id]);
+  const deltaEl = delta == null ? null
+    : h('p', { class: `hm-delta${delta > 0 ? ' up' : delta < 0 ? ' down' : ''}` },
+      delta === 0 ? 'Same as last week' : `${delta > 0 ? '+' : '−'}${Math.abs(delta)}% this week`);
+  const readyBox = box('Readiness', cd || h('a', { href: '#/settings' }, 'Set conference date'),
+    [h('div', { class: 'hm-ready' },
+      ring(pct, `${pct}% ready for the ${examName} exam`),
+      h('div', { class: 'hm-rmeta' },
+        deltaEl,
+        h('p', { class: 'hm-rl' }, noExam ? 'Mastery across your event’s practice questions' : `Ready for the ${examName} exam`),
+        answered ? null : h('p', { class: 'hm-rhint' }, 'Your ring fills as you answer practice questions.'))),
+    noExam ? h('p', { class: 'box-note' }, NO_EXAM_NOTE) : null], { class: 'hm-readybox' });
+
+  // Today's plan: three tasks fixed for the day, checked off as they're done.
+  const plan = ensurePlan(state, data, level, today);
+  if (notePlanProgress(state, today)) dirty = true;
+  let planBox = null;
+  if (plan.tasks.length) {
+    const rows = plan.tasks.map(t => {
+      const done = isPlanDone(state, today, t.id);
+      return h('a', { class: `row plan-row${done ? ' done' : ''}`, href: t.href },
+        h('span', { class: 'pcheck', 'aria-hidden': 'true' }, icon('check')),
+        h('div', { class: 't' }, done ? h('span', { class: 'sr-only' }, 'Done: ') : null, t.title, t.sub ? h('small', null, t.sub) : null),
+        h('span', { class: 'tag' }, `${t.min} min`), chev());
+    });
+    const left = plan.tasks.filter(t => !isPlanDone(state, today, t.id));
+    const next = nextTask(state, plan, today);
+    const total = planMinutes(plan);
+    const meta = !left.length ? 'All done' : left.length === plan.tasks.length ? `${total} min`
+      : `${left.reduce((t, k) => t + k.min, 0)} min left`;
+    planBox = box('Today’s plan', meta, [
+      h('div', { class: 'group' }, rows),
+      next ? h('a', { class: 'cta', href: next.href }, 'Continue plan')
+        : h('p', { class: 'plan-done' }, h('span', { 'aria-hidden': 'true' }, icon('check')), 'Plan done for today. Nice work!'),
+    ], { class: 'hm-plan' });
+  }
+
+  // Tiles: streak and last mock (cards known for an event with no exam).
+  const streak = liveStreak(state.streak, today);
+  let second;
+  if (noExam) {
+    const known = CARDS.filter(c => state.cards[c.id] && state.cards[c.id].known).length;
+    second = tile('#/cards', 'cards', `${known}/${CARDS.length}`, 'Cards known');
+  } else {
+    const mine = state.exams.filter(e => examEvent(e) === data.EVENT.id);
+    const last = mine.length ? mine[mine.length - 1] : null;
+    const lastVal = last ? Math.round(last.percent ?? last.score) : null;
+    second = tile(last ? `#/exam?result=${state.exams.lastIndexOf(last)}` : '#/exam', 'exam',
+      lastVal == null ? '—' : `${lastVal}%`, lastVal == null ? 'No mock yet' : 'Last mock');
+  }
+  const tiles = h('div', { class: 'hm-tiles' },
+    tile(null, 'flame', String(streak), 'Day streak', streak ? ' hot' : ''), second);
+
+  el.append(...[head, resume, readyBox, planBox, tiles].filter(Boolean));
+  if (dirty) ctx.save();
 }

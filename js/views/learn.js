@@ -1,6 +1,7 @@
 // Learn tab (#/learn): search, the Watch shelf and areas in blueprint order.
 // Area page (#/learn/:area): that area's lessons and videos, plus area practice.
-import { h, icon } from '../ui.js';
+import { h, icon, box } from '../ui.js';
+import { lastRead } from '../foryou.js';
 import { areaMastery } from '../progress.js';
 import { videoThumb } from '../reel-thumb.js';
 import { videoClock, snapSpeed } from '../player-timeline.js';
@@ -101,10 +102,16 @@ function renderHome(el, ctx) {
   // Watch shelf, videos in blueprint area order.
   const areaIdx = id => { const i = AREAS.findIndex(a => a.id === id); return i < 0 ? 99 : i; };
   const vids = [...VIDEOS].sort((a, b) => areaIdx(a.area) - areaIdx(b.area));
-  const shelf = vids.length ? [
-    h('h2', { class: 'gh' }, 'Watch'),
+  const watched = state.watched || {};
+  const seen = vids.filter(v => watched[v.id]).length;
+  const shelf = vids.length ? box('Watch', `${seen} of ${vids.length} watched`,
     h('div', { class: 'shelf', role: 'list' }, vids.map(v => { const c = videoCard(v, areaName(v.area), state); c.setAttribute('role', 'listitem'); return c; })),
-  ] : [];
+    { class: 'shelf-box' }) : null;
+
+  // Continue: the lesson opened most recently.
+  const recent = lastRead(state, data);
+  const cont = recent ? box('Continue', 'Last opened', h('div', { class: 'group' },
+    lessonRow(recent, `${areaName(recent.area)} · ${recent.minutes} min`))) : null;
 
   const areaRows = AREAS.map(a => {
     const items = BLUEPRINT[a.id] ? BLUEPRINT[a.id][level] : 0;
@@ -114,7 +121,8 @@ function renderHome(el, ctx) {
       examLine(items, level) + (n ? '' : ' · No lessons in this area yet.'),
       masteryMeter(has ? areaMastery(state, QUESTIONS, a.id) : 0), items ? '' : 'off');
   });
-  const browse = h('div', { class: 'browse' }, ...shelf, h('h2', { class: 'gh' }, 'Areas'), h('div', { class: 'group' }, areaRows));
+  const browse = h('div', { class: 'browse' }, cont, shelf,
+    box('Areas', plural(AREAS.length, 'area'), h('div', { class: 'group' }, areaRows)));
 
   const paint = () => {
     const q = input.value.trim();
@@ -129,12 +137,11 @@ function renderHome(el, ctx) {
         h('p', null, `No lessons match “${q}”.`), h('p', { class: 'empty-hint' }, 'Try a key term like “liquidity” or a PI code like FI:062.')));
       return;
     }
-    results.append(
-      h('h2', { class: 'gh' }, plural(hits.length, 'lesson')),
+    results.append(box('Results', plural(hits.length, 'lesson'),
       h('div', { class: 'group' }, hits.map(({ lesson, pi, term }) => {
         const sub = pi ? `${pi.code} · ${pi.title}` : term ? `Key term: ${term.term}` : `${areaName(lesson.area)} · ${lesson.minutes} min`;
         return lessonRow(lesson, sub);
-      })));
+      }))));
   };
   input.addEventListener('input', paint);
   input.addEventListener('keydown', e => { if (e.key === 'Escape' && input.value) { e.stopPropagation(); input.value = ''; paint(); } });
@@ -163,22 +170,31 @@ function renderArea(el, ctx, areaId) {
   const lessons = LESSONS.filter(l => l.area === area.id);
   const videos = VIDEOS.filter(v => v.area === area.id);
 
-  el.append(back, h('h1', { class: 'lt' }, area.name),
-    h('p', { class: 'sub' }, examLine(items, level) + (answered ? ` · ${Math.round(m * 100)}% mastered` : '')));
+  const pct = Math.round(m * 100);
+  el.append(back, h('section', { class: 'box area-head', 'aria-label': area.name },
+    h('div', { class: 'area-top' },
+      h('span', { class: 'fy-ico', 'aria-hidden': 'true' }, icon(area.id)),
+      h('div', { class: 'area-txt' }, h('h1', { class: 'lt' }, area.name), h('p', null, examLine(items, level)))),
+    has ? h('div', { class: 'lesson-prog' },
+      h('div', { class: 'bar', role: 'img', 'aria-label': `${pct}% mastered` }, h('i', { style: `width:${pct}%` })),
+      h('span', { class: 'num' }, answered ? `${pct}% mastered` : 'Not practiced yet')) : null));
 
   if (!lessons.length) {
     el.append(h('div', { class: 'empty' }, h('div', { class: 'ico' }, icon(area.id)), h('p', null, 'Lessons for this area are on the way.')));
   } else {
-    el.append(h('h2', { class: 'gh' }, plural(lessons.length, 'lesson')), h('div', { class: 'group' }, lessons.map(l => lessonRow(l))));
+    const read = state.read || {};
+    el.append(box('Lessons', `${lessons.filter(l => read[l.id]).length} of ${lessons.length} read`, h('div', { class: 'group' }, lessons.map(l => lessonRow(l)))));
   }
   if (videos.length) {
-    el.append(h('h2', { class: 'gh' }, 'Video lessons'), h('div', { class: 'group' }, videos.map(v =>
-      row(`#/watch/${encodeURIComponent(v.id)}`, ico('video'), v.title, videoLength(v, state)))));
+    const watched = state.watched || {};
+    el.append(box('Video lessons', `${videos.filter(v => watched[v.id]).length} of ${videos.length} watched`, h('div', { class: 'group' }, videos.map(v =>
+      row(`#/watch/${encodeURIComponent(v.id)}`, ico('video'), v.title, videoLength(v, state),
+        watched[v.id] ? h('span', { class: 'tag' }, 'Watched') : null)))));
   }
   const pis = PIS.filter(p => p.area === area.id && QUESTIONS.some(q => q.pi === p.code)).map(p => p.code);
   if (pis.length) {
-    el.append(h('a', { class: 'cta', href: quizHref(pis) }, `Practice ${area.name.toLowerCase()}`),
-      h('p', { class: 'cta-note' }, '10 questions from across this area'));
+    el.append(h('div', { class: 'page-actions' }, h('a', { class: 'cta', href: quizHref(pis) }, `Practice ${area.name.toLowerCase()}`),
+      h('p', { class: 'cta-note' }, '10 questions from across this area')));
   }
 }
 

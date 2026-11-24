@@ -1,7 +1,7 @@
 // Settings (#/settings): level, conference, theme, narration, backup/restore/reset, about.
 // Everything the user types is set as a property or text (never parsed as markup).
-import { h, icon, openSheet } from '../ui.js';
-import { saveState, exportState, importState, defaultState, BAD_BACKUP } from '../store.js';
+import { h, icon, box, openSheet } from '../ui.js';
+import { saveState, exportState, importState, defaultState, BAD_BACKUP, cleanName } from '../store.js';
 import { LEVEL_NAME } from './learn.js';
 import { levelOf, ymd } from '../practice-lib.js';
 import { openEventSheet } from '../picker.js';
@@ -34,6 +34,12 @@ export function render(el, params, ctx) {
   const s = ctx.state.settings;
   const rerender = () => { el.replaceChildren(); render(el, params, ctx); };
   const set = (k, v) => { ctx.state.settings[k] = v; ctx.save(); };
+
+  // Your name (first name only; set as a property and shown as text, never parsed as markup)
+  const myName = h('input', { class: 'st-input', id: 'st-name', type: 'text', maxlength: '20', autocomplete: 'given-name', autocapitalize: 'words', spellcheck: 'false', placeholder: 'Add your name', enterkeyhint: 'done' });
+  myName.value = s.name || '';
+  myName.addEventListener('input', () => { set('name', cleanName(myName.value)); set('askedName', 1); });
+  myName.addEventListener('change', () => { myName.value = ctx.state.settings.name; });
 
   // Event
   const ev = ctx.data.EVENT;
@@ -119,34 +125,37 @@ export function render(el, params, ctx) {
     rerender();
   }) }, h('div', { class: 'ico' }, ICON.reset()), h('div', { class: 't' }, 'Reset progress', h('small', null, 'Start over on this device')));
 
+  const note = text => h('p', { class: 'box-note' }, text);
   el.append(
     h('h1', { class: 'lt' }, 'Settings'),
-    h('h2', { class: 'gh' }, 'Event'),
-    h('div', { class: 'group' }, eventRow),
-    h('p', { class: 'note' }, 'Lessons, practice and mock exams follow your event. Your answers are kept if you switch.'),
-    h('h2', { class: 'gh' }, 'Competition'),
-    h('div', { class: 'group st-group' },
-      h('div', { class: 'st-row st-stack' }, h('span', { class: 'st-label', id: 'st-level-l' }, 'Competition level'), levelSeg, levelNote),
-      h('label', { class: 'st-row', for: 'st-conf' }, h('span', { class: 'st-label' }, 'Conference'), nameInput),
-      h('label', { class: 'st-row', for: 'st-date' }, h('span', { class: 'st-label' }, 'Date'), dateInput)),
-    h('p', { class: 'note' }, 'Home counts down to your conference date.'),
-    h('h2', { class: 'gh' }, 'Appearance'),
-    h('div', { class: 'group st-group' }, h('div', { class: 'st-row st-stack' }, h('span', { class: 'st-label' }, 'Theme'), themeSeg)),
-    h('p', { class: 'note' }, 'Auto matches your device’s light or dark setting.'),
-    h('h2', { class: 'gh' }, 'Video lessons'),
-    h('div', { class: 'group st-group' }, h('label', { class: 'st-row', for: 'st-narrate' }, h('span', { class: 'st-label' }, 'Narrate videos'), narr)),
-    h('p', { class: 'note' }, 'Plays recorded narration, or your device’s voice when needed. Captions always show.'),
-    h('h2', { class: 'gh' }, 'Your progress'),
-    h('div', { class: 'group' }, exportBtn, importBtn, resetBtn),
-    file, statusEl,
-    h('p', { class: 'note' }, 'Progress is saved only on this device. Export a backup to move it to another one.'),
-    h('h2', { class: 'gh' }, 'Offline'),
-    h('div', { class: 'group st-group' }, h('div', { class: 'st-row' }, h('span', { class: 'st-label' }, 'Offline use'), offVal)),
-    h('p', { class: 'note' }, 'After the first download, lessons, video reels and practice work without a connection.'),
-    h('h2', { class: 'gh' }, 'About'),
-    h('div', { class: 'group' }, h('div', { class: 'row' }, h('div', { class: 'ico' }, ICON.info()),
-      h('div', { class: 't' }, 'DECA Study Buddy', h('small', null, `Version ${APP_VERSION} · Works offline`))), updBtn),
-    h('p', { class: 'note' }, 'An independent study app for DECA Team Decision Making exams. Not affiliated with or endorsed by DECA Inc. Practice questions are original.'),
+    box('You', null, [
+      h('div', { class: 'group st-group' }, h('label', { class: 'st-row', for: 'st-name' }, h('span', { class: 'st-label' }, 'Your name'), myName)),
+      note('Used to greet you on Home. Saved only on this device.')]),
+    box('Event', null, [h('div', { class: 'group' }, eventRow),
+      note('Lessons, practice and mock exams follow your event. Your answers are kept if you switch.')]),
+    box('Competition', null, [
+      h('div', { class: 'group st-group' },
+        h('div', { class: 'st-row st-stack' }, h('span', { class: 'st-label', id: 'st-level-l' }, 'Competition level'), levelSeg, levelNote),
+        h('label', { class: 'st-row', for: 'st-conf' }, h('span', { class: 'st-label' }, 'Conference'), nameInput),
+        h('label', { class: 'st-row', for: 'st-date' }, h('span', { class: 'st-label' }, 'Date'), dateInput)),
+      note('Home counts down to your conference date.')]),
+    box('Appearance', null, [
+      h('div', { class: 'group st-group' }, h('div', { class: 'st-row st-stack' }, h('span', { class: 'st-label' }, 'Theme'), themeSeg)),
+      note('Auto matches your device’s light or dark setting.')]),
+    box('Video lessons', null, [
+      h('div', { class: 'group st-group' }, h('label', { class: 'st-row', for: 'st-narrate' }, h('span', { class: 'st-label' }, 'Narrate videos'), narr)),
+      note('Plays recorded narration, or your device’s voice when needed. Captions always show.')]),
+    box('Your progress', null, [
+      h('div', { class: 'group' }, exportBtn, importBtn, resetBtn),
+      file, statusEl,
+      note('Progress is saved only on this device. Export a backup to move it to another one.')]),
+    box('Offline', null, [
+      h('div', { class: 'group st-group' }, h('div', { class: 'st-row' }, h('span', { class: 'st-label' }, 'Offline use'), offVal)),
+      note('After the first download, lessons, video reels and practice work without a connection.')]),
+    box('About', null, [
+      h('div', { class: 'group' }, h('div', { class: 'row' }, h('div', { class: 'ico' }, ICON.info()),
+        h('div', { class: 't' }, 'DECA Study Buddy', h('small', null, `Version ${APP_VERSION} · Works offline`))), updBtn),
+      note('An independent study app for DECA Team Decision Making exams. Not affiliated with or endorsed by DECA Inc. Practice questions are original.')]),
     h('div', { class: 'st-credit' },
       h('span', null, 'Developed by'),
       h('img', { src: 'icons/prov.svg', alt: 'PROV Software', width: '210', height: '46' })));

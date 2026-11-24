@@ -1,6 +1,6 @@
 // Mock exam (#/exam): intro, 100 timed questions with flags and a navigator, then results.
 // #/exam?result=<index> shows a past exam from history.
-import { h, icon, openSheet, reducedMotion } from '../ui.js';
+import { h, icon, box, openSheet, reducedMotion } from '../ui.js';
 import { LEVEL_NAME } from './learn.js';
 import { KEYS, glyph, haptic, scoreRing, areaResultRows, piChip } from './quiz.js';
 import {
@@ -49,10 +49,10 @@ function renderIntro(el, ctx) {
     h('a', { class: 'back', href: '#/practice' }, icon('back'), h('span', null, 'Practice')),
     h('h1', { class: 'lt' }, 'Mock exam'),
     h('p', { class: 'sub' }, `100 questions on the ${LEVEL_NAME[level]} blueprint`),
-    h('div', { class: 'group' },
+    box('How it works', '60:00', h('div', { class: 'group' },
       infoRow(icon('exam'), '100 questions', `Weighted like the ${LEVEL_NAME[level]} exam. Change your level in Settings.`),
       infoRow(glyph('clock'), '60:00 practice timer', 'It pauses whenever you leave the exam.'),
-      infoRow(glyph('flag'), 'Answers at the end', 'Flag questions and jump around with the question grid.')),
+      infoRow(glyph('flag'), 'Answers at the end', 'Flag questions and jump around with the question grid.'))),
     h('button', { class: 'cta', type: 'button', onclick: start }, 'Start mock exam'),
     h('p', { class: 'cta-note' }, 'The official time limit for this exam isn’t confirmed, so this timer is for practice.'));
 }
@@ -155,8 +155,9 @@ function runExam(el, ctx, exam, questions) {
       isLast ? 'Review and submit' : 'Next');
 
     const node = h('div', { class: 'qz-q' },
-      area ? h('span', { class: 'qz-area' }, area.name) : null,
-      h('h2', { class: 'qz-stem' }, q.stem),
+      h('div', { class: 'box qz-qbox' },
+        area ? h('div', { class: 'qz-qtop' }, h('span', { class: 'qz-area' }, area.name)) : null,
+        h('h2', { class: 'qz-stem' }, q.stem)),
       h('div', { class: 'qz-choices', role: 'group', 'aria-label': 'Answer choices' }, buttons),
       h('div', { class: 'ex-actions' }, prev, flagBtn, next));
     const old = stage.firstElementChild;
@@ -286,11 +287,10 @@ function renderResults(el, ctx, rec, timeUp = false) {
     h('p', { class: 'sub' }, [fmtDate(rec.date), `${LEVEL_NAME[level]} blueprint`].filter(Boolean).join(' · ')),
     timeUp ? h('p', { class: 'ex-timeup', role: 'status' }, 'Time’s up. Your exam was submitted automatically.') : null,
     h('section', { class: 'ringwrap' }, scoreRing(pct, 'score', `${pct}% on this mock exam`), h('div', { class: 'ringmeta' }, meta)),
-    h('h2', { class: 'gh' }, 'Results by area'),
-    h('div', { class: 'group' }, areaResultRows(rec.byArea || {}, AREAS, id => {
+    box('Results by area', `${rec.score} of ${rec.total}`, h('div', { class: 'group' }, areaResultRows(rec.byArea || {}, AREAS, id => {
       const bp = BLUEPRINT[id] ? BLUEPRINT[id][level] : 0;
       return bp ? `blueprint ${bp}` : 'not on the blueprint';
-    })));
+    }))));
 
   // Question review (records saved before ids were stored skip this).
   const byId = new Map(QUESTIONS.map(q => [q.id, q]));
@@ -330,7 +330,7 @@ function renderResults(el, ctx, rec, timeUp = false) {
     const seg = h('div', { class: 'xp-seg ex-seg', role: 'radiogroup', 'aria-label': 'Show questions' },
       [['all', `All ${counts.all}`], ['wrong', `Missed ${counts.wrong}`], ['flag', `Flagged ${counts.flag}`]].map(([v, t], i) =>
         h('label', null, h('input', { type: 'radio', name: 'ex-filter', value: v, checked: i === 0, onchange: () => filter(v) }), h('span', null, t))));
-    put(h('h2', { class: 'gh' }, 'Review every question'), seg, list);
+    put(box('Review every question', `${counts.wrong} missed`, [seg, list], { class: 'ex-revbox' }));
   }
 
   const resp = rec.responses || {};
