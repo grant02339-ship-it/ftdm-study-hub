@@ -19,14 +19,14 @@ export const ROUTES = {
   lesson:   { title: 'Lesson', tab: 'learn', param: 'id', sheet: true },
   watch:    { title: 'Video lesson', tab: 'learn', param: 'id', sheet: true },
   practice: { title: 'Practice', tab: 'practice' },
-  leaderboard: { title: 'Leaderboard', tab: 'home' },
+  leaderboard: { title: 'Leaderboard', tab: 'leaderboard' },
   quiz:     { title: 'Quiz', tab: 'practice', sheet: true },
   exam:     { title: 'Mock exam', tab: 'practice' },
   cards:    { title: 'Cards', tab: 'cards' },
   settings: { title: 'Settings', tab: 'settings' },
 };
 const NAV = [
-  ['home', 'Home'], ['learn', 'Learn'], ['foryou', 'For you'], ['practice', 'Practice'], ['cards', 'Cards'],
+  ['home', 'Home'], ['learn', 'Learn'], ['foryou', 'For you'], ['practice', 'Practice'], ['cards', 'Cards'], ['leaderboard', 'Ranks'],
 ];
 
 // '#/learn/FI?x=1' -> {name:'learn', params:{area:'FI', x:'1'}, key:'learn/FI?x=1'}
@@ -69,14 +69,15 @@ const tabbar = document.querySelector('.tabbar');
 const sidebar = document.querySelector('.sidebar');
 
 function buildNav() {
+  tabbar.style.setProperty('--n', NAV.length);
   tabbar.append(h('span', { class: 'tab-ind', 'aria-hidden': 'true' }));
   for (const [id, label] of NAV) {
-    tabbar.append(h('a', { class: 'tab', href: `#/${id}`, dataset: { tab: id } }, icon(id), h('span', null, label)));
+    tabbar.append(h('a', { class: 'tab', href: `#/${id}`, dataset: { tab: id } }, icon(id === 'leaderboard' ? 'trophy' : id), h('span', null, label)));
   }
   sidebar.append(
     h('div', { class: 'brand' }, brandMark(), h('span', null, 'DECA Study Buddy')),
     h('div', { class: 'side-box' },
-      ...NAV.map(([id, label]) => h('a', { class: 'side-link', href: `#/${id}`, dataset: { tab: id } }, icon(id), h('span', null, label)))),
+      ...NAV.map(([id, label]) => h('a', { class: 'side-link', href: `#/${id}`, dataset: { tab: id } }, icon(id === 'leaderboard' ? 'trophy' : id), h('span', null, id === 'leaderboard' ? 'Leaderboard' : label)))),
     h('div', { class: 'side-box' },
       h('a', { class: 'side-link', href: '#/settings', dataset: { tab: 'settings' } }, icon('settings'), h('span', null, 'Settings'))),
   );
