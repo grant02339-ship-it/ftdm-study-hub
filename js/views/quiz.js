@@ -173,6 +173,7 @@ function runQuiz(el, questions, title, ctx, planTask = null) {
       recordAnswer(ctx.state, q, correct, Date.now());
       noteStudy(ctx.state);
       ctx.save();
+      ctx.syncScore();
       haptic(10);
       results.push({ q, correct, chosen: map[k] });
       buttons.forEach((b, j) => {

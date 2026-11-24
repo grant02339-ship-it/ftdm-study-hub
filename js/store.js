@@ -6,7 +6,7 @@ export const BAD_BACKUP = "That file isn't a DECA Study Buddy backup.";
 export function defaultState() {
   return {
     v: 1,
-    answers: {},   // qid -> {n, correct, last (bool, latest attempt), at (ms)}
+    answers: {},   // qid -> {n, correct, last (bool, latest attempt), at (ms), streak, days (<=5 local dates answered right), wrongAt (ms)}
     cards: {},     // cid -> {known, seen, last (ms)}
     exams: [],     // [{date, level, score, byArea}]
     activeExam: null,
@@ -17,6 +17,9 @@ export function defaultState() {
     readinessLog: {}, // 'YYYY-MM-DD' -> readiness % that day (last 60 days)
     planDone: {},     // 'YYYY-MM-DD' -> [task ids finished from Today's plan]
     plan: null,       // {date, event, tasks:[{id, title, sub, min, href, n?, video?, lesson?}]} for today
+    activity: {},     // 'YYYY-MM-DD' -> questions answered that local day (last 60 days)
+    // Chapter leaderboard: opt-in only. id is made on first join (ensureLeaderboardId); cache holds the last board fetched.
+    leaderboard: { optIn: false, nickname: '', id: '', asked: false, lastSent: 0, cache: { rows: [], at: 0 } },
   };
 }
 
@@ -39,10 +42,24 @@ function mapEntries(obj, fix) {
   return out;
 }
 
+const pad2 = n => String(n).padStart(2, '0');
+export const localDay = ms => { const d = new Date(ms); return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; };
+export const MAX_DAYS = 5;
+export const ACTIVITY_DAYS = 60;
+const ID_RE = /^[a-zA-Z0-9-]{8,40}$/;
+
+// Old entries had no streak/days: a right last answer counts as a streak of 1 on the day it happened.
 const fixAnswer = a => {
   if (!isObj(a)) return null;
   const n = nat(a.n);
-  return { n, correct: Math.min(n, nat(a.correct)), last: a.last === true, at: fin(a.at) ? a.at : 0 };
+  const last = a.last === true;
+  const at = fin(a.at) ? a.at : 0;
+  const streak = Number.isInteger(a.streak) && a.streak >= 0 ? a.streak : (last ? 1 : 0);
+  const days = Array.isArray(a.days)
+    ? [...new Set(a.days.filter(isDay))].sort().slice(-MAX_DAYS)
+    : (last && at ? [localDay(at)] : []);
+  return { n, correct: Math.min(n, nat(a.correct)), last, at, streak: last ? Math.max(streak, 1) : 0, days,
+    wrongAt: fin(a.wrongAt) && a.wrongAt >= 0 ? a.wrongAt : 0 };
 };
 // {known, seen, last}. Old Leitner entries {box, due} migrate: box >= 2 counts as known.
 const fixCard = c => {
@@ -120,6 +137,55 @@ function fixExam(e) {
   return out;
 }
 
+// Questions answered per local day: valid dates with positive counts, the newest 60 days.
+function fixActivity(v) {
+  if (!isObj(v)) return {};
+  const days = Object.keys(v).filter(k => isDay(k) && nat(v[k]) > 0).sort().slice(-ACTIVITY_DAYS);
+  const out = {};
+  for (const k of days) out[k] = v[k];
+  return out;
+}
+
+// One leaderboard row from the server (or the saved cache). Names come from other people: only ever shown as text.
+export function cleanBoardRow(r) {
+  if (!isObj(r)) return null;
+  const name = cleanName(typeof r.name === 'string' ? r.name.replace(/[<>]/g, '') : '');
+  if (!name) return null;
+  const num = (v, max) => (fin(v) ? Math.max(0, Math.min(max, Math.round(v))) : 0);
+  return {
+    name, event: EVENT_IDS.includes(r.event) ? r.event : '',
+    readiness: num(r.readiness, 100), weekQuestions: num(r.weekQuestions, 5000),
+    streak: num(r.streak, 3650), totalAnswered: num(r.totalAnswered, 100000),
+    updated: fin(r.updated) && r.updated >= 0 ? r.updated : 0,
+  };
+}
+
+function fixLeaderboard(v) {
+  const d = defaultState().leaderboard;
+  if (!isObj(v)) return d;
+  const c = isObj(v.cache) ? v.cache : {};
+  return {
+    optIn: v.optIn === true,
+    nickname: cleanName(v.nickname),
+    id: typeof v.id === 'string' && ID_RE.test(v.id) ? v.id : '',
+    asked: v.asked === true,
+    lastSent: fin(v.lastSent) && v.lastSent >= 0 ? v.lastSent : 0,
+    cache: { rows: Array.isArray(c.rows) ? c.rows.slice(0, 500).map(cleanBoardRow).filter(Boolean) : [], at: fin(c.at) && c.at >= 0 ? c.at : 0 },
+  };
+}
+
+// Makes the random id the first time it's needed (joining the board) and returns it.
+export function ensureLeaderboardId(state) {
+  const lb = state.leaderboard;
+  if (!ID_RE.test(lb.id || '')) {
+    let id = '';
+    try { id = globalThis.crypto.randomUUID(); } catch (e) { /* older browsers: fall back below */ }
+    if (!ID_RE.test(id)) id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.floor(Math.random() * 16); return (c === 'x' ? r : (r & 3) | 8).toString(16); });
+    lb.id = id;
+  }
+  return lb.id;
+}
+
 function fixSettings(s) {
   const d = defaultState().settings;
   if (!isObj(s)) return d;
@@ -158,6 +224,8 @@ function normalize(raw) {
     readinessLog: fixLog(raw.readinessLog),
     planDone: fixPlanDone(raw.planDone),
     plan: fixPlan(raw.plan),
+    activity: fixActivity(raw.activity),
+    leaderboard: fixLeaderboard(raw.leaderboard),
   };
 }
 
@@ -192,8 +260,22 @@ export function saveState(state, storage) {
 
 // Records one attempt. Mutates and returns state. Streaks are updated separately (progress.bumpStreak).
 export function recordAnswer(state, q, correct, now) {
-  const prev = state.answers[q.id] || { n: 0, correct: 0 };
-  state.answers[q.id] = { n: prev.n + 1, correct: prev.correct + (correct ? 1 : 0), last: !!correct, at: now };
+  const prev = state.answers[q.id] || { n: 0, correct: 0, streak: 0, days: [], wrongAt: 0 };
+  // Correct days since the last miss: a miss clears them, so mastery needs two days after it.
+  const days = correct && Array.isArray(prev.days) ? prev.days.slice() : [];
+  const day = localDay(now);
+  if (correct && !days.includes(day)) days.push(day);
+  state.answers[q.id] = {
+    n: prev.n + 1, correct: prev.correct + (correct ? 1 : 0), last: !!correct, at: now,
+    streak: correct ? (prev.streak || 0) + 1 : 0,
+    days: days.sort().slice(-MAX_DAYS),
+    wrongAt: correct ? (prev.wrongAt || 0) : now,
+  };
+  // Questions answered today (any answer), for the leaderboard's weekly count.
+  if (!isObj(state.activity)) state.activity = {};
+  state.activity[day] = nat(state.activity[day]) + 1;
+  const oldest = localDay(now - ACTIVITY_DAYS * 86400000);
+  for (const k of Object.keys(state.activity)) if (k < oldest) delete state.activity[k];
   return state;
 }
 

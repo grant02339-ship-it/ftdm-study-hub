@@ -43,6 +43,7 @@ const ICONS = {
   play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 001.5.86l10.4-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg>',
   foryou: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M10 3.5l1.6 4.6a3 3 0 001.8 1.8L18 11.5l-4.6 1.6a3 3 0 00-1.8 1.8L10 19.5l-1.6-4.6a3 3 0 00-1.8-1.8L2 11.5l4.6-1.6a3 3 0 001.8-1.8z"/><path d="M18.5 2.5v4M16.5 4.5h4M19 16.5v3M17.5 18h3"/></svg>`,
   flame: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M12 21c-3.9 0-7-2.8-7-6.6 0-2.7 1.6-4.6 3.2-6.3.4 1.7 1.4 2.9 2.6 3.4C10.4 8 11.6 5 14.3 3c.2 3 1.7 4.6 3 6.2 1.1 1.4 1.7 3 1.7 5.2C19 18.2 15.9 21 12 21z"/><path d="M12 21c-1.7 0-3-1.3-3-3 0-1.9 1.6-2.8 2.4-4.4.9 1.2 3.6 2.2 3.6 4.4 0 1.7-1.3 3-3 3z"/></svg>`,
+  trophy: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M7 4h10v5a5 5 0 01-10 0z"/><path d="M7 6H4v1.5A3.5 3.5 0 007.5 11M17 6h3v1.5a3.5 3.5 0 01-3.5 3.5M12 14v4M8.5 20.5h7M9.5 18h5"/></svg>`,
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.2 4.2L18.5 7.5"/></svg>',
   clock: `<svg viewBox="0 0 24 24" ${STROKE}><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>`,
   spark: `<svg viewBox="0 0 24 24" ${STROKE}><path d="M4 18l5-6 4 3 7-9"/><circle cx="20" cy="6" r="1.2" fill="currentColor"/></svg>`,

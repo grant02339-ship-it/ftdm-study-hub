@@ -7,6 +7,8 @@ import { showEventPicker, openEventAnnouncement, switchEvent } from './picker.js
 import { showNameStep } from './welcome.js';
 import { h, icon, brandMark, applyTheme, openSheet, placeholder } from './ui.js';
 import { initOffline, routeChanged } from './offline.js';
+import { syncScore } from './leaderboard.js';
+import { openJoinSheet } from './lb-join.js';
 
 // tab: which nav item lights up. param: name of the first path segment after the route.
 // sheet: rendered in a sheet over the current page instead of replacing it.
@@ -17,6 +19,7 @@ export const ROUTES = {
   lesson:   { title: 'Lesson', tab: 'learn', param: 'id', sheet: true },
   watch:    { title: 'Video lesson', tab: 'learn', param: 'id', sheet: true },
   practice: { title: 'Practice', tab: 'practice' },
+  leaderboard: { title: 'Leaderboard', tab: 'home' },
   quiz:     { title: 'Quiz', tab: 'practice', sheet: true },
   exam:     { title: 'Mock exam', tab: 'practice' },
   cards:    { title: 'Cards', tab: 'cards' },
@@ -53,6 +56,8 @@ const ctx = {
   // Event switch with the mock-exam confirmation; done() runs after the event actually changes.
   switchEvent(picked, done) { switchEvent(ctx, picked, done); },
   save() { return saveState(ctx.state); },
+  // Uploads the score to the chapter leaderboard when joined (throttled, silent on failure).
+  syncScore(opts) { return syncScore(ctx, opts); },
   go(hash) { location.hash = hash; },
   applyTheme,
 };
@@ -200,6 +205,20 @@ async function route() {
   if (token === navToken) routeChanged();
 }
 
+/* ---------- Chapter leaderboard ---------- */
+// One-time invitation on Home, after the name and event steps. Marked asked as soon as it opens.
+function askLeaderboard() {
+  const lb = ctx.state.leaderboard;
+  if (lb.asked || lb.optIn || sheet || parseHash(location.hash).name !== 'home') return;
+  lb.asked = true;
+  ctx.save();
+  openJoinSheet(ctx, joined => { if (joined && parseHash(location.hash).name === 'home') route(); });
+}
+// Upload on app open, when the app comes back to the front, and when the connection returns.
+window.addEventListener('online', () => ctx.syncScore());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') ctx.syncScore(); });
+ctx.syncScore();
+
 /* ---------- Boot ---------- */
 applyTheme(ctx.state.settings.theme);
 buildNav();
@@ -211,13 +230,16 @@ if (firstLaunch) {
   showNameStep({ step: 'Step 1 of 2', onDone(name) {
     ctx.state.settings.name = name;
     ctx.state.settings.askedName = 1;
-    showEventPicker(ev => { ctx.state.settings.seenEventPrompt = 1; ctx.setEvent(ev.id); route(); }, { step: 'Step 2 of 2', name });
+    showEventPicker(ev => { ctx.state.settings.seenEventPrompt = 1; ctx.setEvent(ev.id); route().then(() => setTimeout(askLeaderboard, 700)); }, { step: 'Step 2 of 2', name });
   } });
 } else {
   // Existing students without a name are asked once, then see the one-time event sheet if it's pending.
   const needName = !ctx.state.settings.name && !ctx.state.settings.askedName;
   route().then(() => {
-    const announce = () => { if (prompt) openEventAnnouncement(ctx, () => route()); };
+    const announce = () => {
+      if (prompt) openEventAnnouncement(ctx, () => { route(); askLeaderboard(); });
+      else askLeaderboard();
+    };
     if (!needName) { announce(); return; }
     ctx.state.settings.askedName = 1;
     ctx.save();

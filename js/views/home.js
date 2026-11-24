@@ -1,8 +1,9 @@
 // Home: greeting + event, readiness ring with weekly change and countdown, Today's plan, streak and last mock.
 import { h, icon, box, reducedMotion } from '../ui.js';
-import { readiness } from '../progress.js';
+import { readiness, masteryCounts } from '../progress.js';
 import { examEvent, NO_EXAM_NOTE } from '../event.js';
 import { eventChip } from '../picker.js';
+import { myRank } from '../leaderboard.js';
 import { restoreExam, examProgress, formatClock } from '../practice-lib.js';
 import {
   greeting, isNewStudent, ensurePlan, notePlanProgress, isPlanDone, nextTask, planMinutes, logReadiness, weeklyDelta,
@@ -101,6 +102,20 @@ function tile(href, iconName, value, label, extra = '') {
   return href ? h('a', { class: `box tile${extra}`, href }, kids) : h('div', { class: `box tile${extra}` }, kids);
 }
 
+// Slim stacked bar (mastered / learning / not started) with counts and the one-line rule.
+function masteryBar(c) {
+  if (!c.total) return null;
+  const learning = c.learning + c.fading;
+  const seg = (cls, n) => (n ? h('i', { class: cls, style: `flex:${n}` }) : null);
+  return h('div', { class: 'hm-mastery' },
+    h('div', { class: 'hm-mbar', role: 'img', 'aria-label': `${c.mastered} mastered, ${learning} learning, ${c.notStarted} not started` },
+      seg('m', c.mastered), seg('l', learning), seg('n', c.notStarted)),
+    h('p', { class: 'hm-mleg' },
+      h('span', { class: 'm' }, `${c.mastered} mastered`), ' · ', h('span', { class: 'l' }, `${learning} learning`), ' · ',
+      h('span', { class: 'n' }, `${c.notStarted} to go`)),
+    h('p', { class: 'hm-mnote' }, 'Mastered = right 3 times in a row, on 2 different days.'));
+}
+
 export function render(el, params, ctx) {
   const { state, data } = ctx;
   const { QUESTIONS, BLUEPRINT, CARDS } = data;
@@ -148,6 +163,7 @@ export function render(el, params, ctx) {
         deltaEl,
         h('p', { class: 'hm-rl' }, noExam ? 'Mastery across your event’s practice questions' : `Ready for the ${examName} exam`),
         answered ? null : h('p', { class: 'hm-rhint' }, 'Your ring fills as you answer practice questions.'))),
+    masteryBar(masteryCounts(state, QUESTIONS, Date.now())),
     noExam ? h('p', { class: 'box-note' }, NO_EXAM_NOTE) : null], { class: 'hm-readybox' });
 
   // Today's plan: three tasks fixed for the day, checked off as they're done.
@@ -187,8 +203,12 @@ export function render(el, params, ctx) {
     second = tile(last ? `#/exam?result=${state.exams.lastIndexOf(last)}` : '#/exam', 'exam',
       lastVal == null ? '—' : `${lastVal}%`, lastVal == null ? 'No mock yet' : 'Last mock');
   }
-  const tiles = h('div', { class: 'hm-tiles' },
-    tile(null, 'flame', String(streak), 'Day streak', streak ? ' hot' : ''), second);
+  // Leaderboard tile: your place from the last board this device saw, or an invitation to join.
+  const lb = state.leaderboard;
+  const rank = lb.optIn ? myRank(lb.cache.rows, state, state.settings.event, 'week') : 0;
+  const lbTile = tile('#/leaderboard', 'trophy', rank ? `#${rank}` : lb.optIn ? '—' : 'Join', 'Leaderboard', rank ? ' hot' : '');
+  const tiles = h('div', { class: 'hm-tiles three' },
+    tile(null, 'flame', String(streak), 'Day streak', streak ? ' hot' : ''), second, lbTile);
 
   el.append(...[head, resume, readyBox, planBox, tiles].filter(Boolean));
   if (dirty) ctx.save();

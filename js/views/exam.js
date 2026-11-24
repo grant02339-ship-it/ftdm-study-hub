@@ -239,6 +239,7 @@ function runExam(el, ctx, exam, questions) {
     const rec = finishExam(ctx.state, exam, questions, Date.now());
     noteStudy(ctx.state);
     ctx.save();
+    ctx.syncScore();
     if (!timeUp) haptic(20);
     // Keep the URL pointing at this result so a reload shows it, without re-routing.
     try { history.replaceState(null, '', `#/exam?result=${ctx.state.exams.length - 1}`); } catch (e) { /* ignore */ }

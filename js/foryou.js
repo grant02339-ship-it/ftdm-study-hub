@@ -1,6 +1,6 @@
 // "For you" picks, Today's plan, the readiness log and the greeting. Pure (no DOM, no storage):
 // the views own saving. `data` is the event slice from eventData(); `level` is the competition level.
-import { areaMastery } from './progress.js';
+import { areaMastery, strength, isFading } from './progress.js';
 import { examEvent } from './event.js';
 import { unknownCards } from './deck.js';
 import { timeline, snapSpeed } from './player-timeline.js';
@@ -23,23 +23,23 @@ export const hasAnswered = (state, data) => data.QUESTIONS.some(q => state.answe
 // Area ids that have questions, best focus first: weakest mastery (ties: heavier on the exam, then
 // blueprint order). Before any answers: heaviest on the exam first. Areas on this level's exam come
 // first; the rest are only used when no area with questions is on it (e.g. a no-exam event).
-export function rankAreas(state, data, level) {
+export function rankAreas(state, data, level, now = Date.now()) {
   const pool = data.AREAS.map((a, i) => ({ id: a.id, i, w: weightOf(data, level, a.id) }))
     .filter(a => data.QUESTIONS.some(q => q.area === a.id));
   const onExam = pool.filter(a => a.w > 0);
   const list = onExam.length ? onExam : pool;
   if (!hasAnswered(state, data)) return list.sort((x, y) => y.w - x.w || x.i - y.i).map(a => a.id);
-  return list.map(a => ({ ...a, m: areaMastery(state, data.QUESTIONS, a.id) }))
+  return list.map(a => ({ ...a, m: areaMastery(state, data.QUESTIONS, a.id, now) }))
     .sort((x, y) => x.m - y.m || y.w - x.w || x.i - y.i).map(a => a.id);
 }
 
 // {id, name, mastery, fresh, reason, weight} for the area to work on now, or null when there are no questions.
-export function focusArea(state, data, level) {
-  const [id] = rankAreas(state, data, level);
+export function focusArea(state, data, level, now = Date.now()) {
+  const [id] = rankAreas(state, data, level, now);
   if (!id) return null;
   const area = data.AREAS.find(a => a.id === id);
   const fresh = !hasAnswered(state, data);
-  const mastery = areaMastery(state, data.QUESTIONS, id);
+  const mastery = areaMastery(state, data.QUESTIONS, id, now);
   const weight = weightOf(data, level, id);
   let reason;
   if (fresh) {
@@ -57,10 +57,10 @@ export function focusArea(state, data, level) {
 /* ---------- Watch, read, practice picks ---------- */
 
 // Up to n reels the student hasn't finished: the focus area's first, then the next-weakest areas'.
-export function watchPicks(state, data, level, n = 3) {
+export function watchPicks(state, data, level, n = 3, now = Date.now()) {
   const watched = state.watched || {};
   const out = [];
-  for (const id of rankAreas(state, data, level)) {
+  for (const id of rankAreas(state, data, level, now)) {
     for (const v of data.VIDEOS) {
       if (out.length >= n) return out;
       if (v.area === id && !watched[v.id] && Array.isArray(v.scenes) && v.scenes.length) out.push(v);
@@ -70,26 +70,29 @@ export function watchPicks(state, data, level, n = 3) {
 }
 
 // Up to n lessons in the area as [{lesson, reason, missed}]: lessons with questions missed last time first
-// (most missed first), then unread "often in case studies" ones, then unread, then case-frequent, then the rest.
-export function readPicks(state, data, areaId, n = 3) {
+// (most missed first), then ones with answers that need a refresh, then unread "often in case studies" ones,
+// then unread, then case-frequent, then the rest.
+export function readPicks(state, data, areaId, n = 3, now = Date.now()) {
   const read = state.read || {};
   return data.LESSONS.filter(l => l.area === areaId).map((lesson, i) => {
-    const missed = data.QUESTIONS.filter(q => lesson.pis.includes(q.pi) && state.answers[q.id] && state.answers[q.id].last === false).length;
+    const qs = data.QUESTIONS.filter(q => lesson.pis.includes(q.pi));
+    const missed = qs.filter(q => state.answers[q.id] && state.answers[q.id].last === false).length;
+    const fading = qs.filter(q => isFading(state.answers[q.id], now)).length;
     const cf = !!lesson.caseFrequent, unread = !read[lesson.id];
-    const tier = missed ? 0 : cf && unread ? 1 : unread ? 2 : cf ? 3 : 4;
-    const reason = missed ? `You missed ${missed}` : cf ? 'Often in cases' : unread ? 'Not read yet' : 'Read again';
+    const tier = missed ? 0 : fading ? 1 : cf && unread ? 2 : unread ? 3 : cf ? 4 : 5;
+    const reason = missed ? 'Missed recently' : fading ? 'Needs a refresh' : cf ? 'Often in cases' : unread ? 'Not read yet' : 'Read again';
     return { lesson, reason, missed, tier, i };
   }).sort((a, b) => a.tier - b.tier || b.missed - a.missed || a.i - b.i)
     .slice(0, n).map(({ lesson, reason, missed }) => ({ lesson, reason, missed }));
 }
 
-// The area's lowest-mastery PI codes (ties: PI order), adding PIs until they hold at least `target` questions.
-export function drillPis(state, data, areaId, target = DRILL_N) {
+// The area's lowest-strength PI codes (ties: PI order), adding PIs until they hold at least `target` questions.
+export function drillPis(state, data, areaId, target = DRILL_N, now = Date.now()) {
   const pis = data.PIS.filter(p => p.area === areaId).map((p, i) => {
     const qs = data.QUESTIONS.filter(q => q.pi === p.code);
     if (!qs.length) return null;
-    const right = qs.filter(q => state.answers[q.id] && state.answers[q.id].last).length;
-    return { code: p.code, m: right / qs.length, n: qs.length, i };
+    const m = qs.reduce((t, q) => t + strength(state.answers[q.id], now), 0) / qs.length;
+    return { code: p.code, m, n: qs.length, i };
   }).filter(Boolean).sort((a, b) => a.m - b.m || a.i - b.i);
   const out = [];
   let count = 0;

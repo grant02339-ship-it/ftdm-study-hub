@@ -217,6 +217,15 @@ html.scrolled .topbar-title{opacity:1;transform:none}
 .hm-delta.down{color:var(--text2)}
 .hm-rl{font-size:14px;color:var(--text2);line-height:1.35}
 .hm-rhint{font-size:13px;color:var(--text2);line-height:1.35;margin-top:4px;opacity:.85}
+.hm-mastery{margin:14px 4px 2px}
+.hm-mbar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--raised);gap:2px}
+.hm-mbar i{display:block;min-width:3px}
+.hm-mbar .m{background:var(--orange)}
+.hm-mbar .l{background:color-mix(in srgb, var(--orange) 38%, var(--raised))}
+.hm-mbar .n{background:var(--raised)}
+.hm-mleg{font-size:13px;color:var(--text);margin-top:8px;font-variant-numeric:tabular-nums}
+.hm-mleg .l,.hm-mleg .n{color:var(--text2)}
+.hm-mnote{font-size:12.5px;color:var(--text2);line-height:1.35;margin-top:4px}
 .plan-row .t{font-weight:500}
 .plan-row .t small{font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcheck{

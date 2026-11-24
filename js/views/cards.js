@@ -162,6 +162,7 @@ export function render(el, params, ctx) {
     noteStudy(ctx.state);
     notePlanProgress(ctx.state, ymd(new Date()));
     ctx.save();
+    ctx.syncScore();
     haptic(10);
     live.textContent = knew ? 'Marked as known.' : 'You’ll see it again soon.';
     paintChips();

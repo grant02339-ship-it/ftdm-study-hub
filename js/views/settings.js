@@ -1,12 +1,14 @@
 // Settings (#/settings): level, conference, theme, narration, backup/restore/reset, about.
 // Everything the user types is set as a property or text (never parsed as markup).
 import { h, icon, box, openSheet } from '../ui.js';
-import { saveState, exportState, importState, defaultState, BAD_BACKUP, cleanName } from '../store.js';
+import { saveState, exportState, importState, defaultState, BAD_BACKUP, cleanName, ensureLeaderboardId } from '../store.js';
 import { LEVEL_NAME } from './learn.js';
 import { levelOf, ymd } from '../practice-lib.js';
 import { openEventSheet } from '../picker.js';
 import { onOfflineStatus, offlineLabel, checkForUpdate, updateNow, updateWaiting } from '../offline.js';
 import { APP_VERSION } from '../version.js';
+import { optOut, boardName } from '../leaderboard.js';
+import { SHARED_TEXT } from '../lb-join.js';
 
 let status = null; // {text, kind} shown once after a re-render
 
@@ -64,6 +66,42 @@ export function render(el, params, ctx) {
   const narr = h('input', { class: 'st-switch', id: 'st-narrate', type: 'checkbox', role: 'switch' });
   narr.checked = s.narrate !== false;
   narr.addEventListener('change', () => set('narrate', narr.checked));
+
+  // Leaderboard
+  const lb = ctx.state.leaderboard;
+  const lbStatus = h('p', { class: 'st-status', role: 'status', 'aria-live': 'polite', hidden: true });
+  const showLb = (text, kind) => { lbStatus.textContent = text; lbStatus.className = `st-status ${kind}`; lbStatus.hidden = false; };
+  const lbSwitch = h('input', { class: 'st-switch', id: 'st-lb', type: 'checkbox', role: 'switch' });
+  lbSwitch.checked = lb.optIn;
+  const nick = h('input', { class: 'st-input', id: 'st-nick', type: 'text', maxlength: '20', autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', placeholder: ctx.state.settings.name || 'Nickname', enterkeyhint: 'done' });
+  nick.value = lb.nickname || '';
+  nick.addEventListener('input', () => { lb.nickname = cleanName(nick.value.replace(/[<>]/g, '')); ctx.save(); });
+  nick.addEventListener('change', () => { nick.value = lb.nickname; if (lb.optIn) ctx.syncScore({ force: true }); });
+  lbSwitch.addEventListener('change', async () => {
+    if (lbSwitch.checked) {
+      if (!boardName(ctx.state)) { lbSwitch.checked = false; showLb('Add a nickname first, so others can see who you are.', 'bad'); nick.focus(); return; }
+      lb.optIn = true; lb.asked = true; lb.lastSent = 0;
+      ensureLeaderboardId(ctx.state);
+      ctx.save();
+      showLb('You’re on the leaderboard.', 'good');
+      ctx.syncScore({ force: true });
+    } else {
+      lbSwitch.disabled = true;
+      const removed = await optOut(ctx);
+      lbSwitch.disabled = false;
+      if (removed) showLb('You’ve been removed from the leaderboard.', 'good');
+      else showLb('Sharing is off. We couldn’t reach the leaderboard to delete your row; tap Remove me when you’re online.', 'bad');
+    }
+  });
+  const removeBtn = h('button', { class: 'row st-danger', type: 'button', onclick: async () => {
+    removeBtn.disabled = true;
+    const removed = await optOut(ctx);
+    removeBtn.disabled = false;
+    lbSwitch.checked = false;
+    showLb(removed ? 'You’ve been removed from the leaderboard.' : 'Couldn’t reach the leaderboard. Check your connection and try again.', removed ? 'good' : 'bad');
+  } }, h('div', { class: 'ico' }, icon('trophy')), h('div', { class: 't' }, 'Remove me from the leaderboard', h('small', null, 'Deletes your entry and stops sharing')));
+  const seeBoard = h('a', { class: 'row', href: '#/leaderboard' }, h('div', { class: 'ico' }, icon('trophy')),
+    h('div', { class: 't' }, 'View leaderboard'), h('span', { class: 'chev', 'aria-hidden': 'true' }, icon('chevron')));
 
   // Progress
   const statusEl = h('p', { class: 'st-status', role: 'status', 'aria-live': 'polite', hidden: true });
@@ -142,6 +180,13 @@ export function render(el, params, ctx) {
     box('Appearance', null, [
       h('div', { class: 'group st-group' }, h('div', { class: 'st-row st-stack' }, h('span', { class: 'st-label' }, 'Theme'), themeSeg)),
       note('Auto matches your device’s light or dark setting.')]),
+    box('Leaderboard', null, [
+      h('div', { class: 'group st-group' },
+        h('label', { class: 'st-row', for: 'st-lb' }, h('span', { class: 'st-label' }, 'Join the leaderboard'), lbSwitch),
+        h('label', { class: 'st-row', for: 'st-nick' }, h('span', { class: 'st-label' }, 'Nickname'), nick)),
+      h('div', { class: 'group lb-set-rows' }, seeBoard, removeBtn),
+      lbStatus,
+      note(`Shared: ${SHARED_TEXT} Turning this off removes you from the board.`)]),
     box('Video lessons', null, [
       h('div', { class: 'group st-group' }, h('label', { class: 'st-row', for: 'st-narrate' }, h('span', { class: 'st-label' }, 'Narrate videos'), narr)),
       note('Plays recorded narration, or your device’s voice when needed. Captions always show.')]),
@@ -166,6 +211,7 @@ function confirmReset(ctx, done) {
   const yes = h('button', { class: 'cta st-reset-yes', type: 'button', onclick: () => {
     const fresh = defaultState();
     fresh.settings = { ...fresh.settings, ...ctx.state.settings };
+    fresh.leaderboard = { ...ctx.state.leaderboard }; // stay on (or off) the board with the same id; the week count restarts
     ctx.state = fresh;
     saveState(ctx.state);
     close();
