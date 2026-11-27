@@ -4,6 +4,7 @@ import { h, icon, box, openSheet, reducedMotion } from '../ui.js';
 import { LEVEL_NAME } from './learn.js';
 import { KEYS, glyph, haptic, scoreRing, areaResultRows, piChip } from './quiz.js';
 import {
+import { needsCalculator, calcButton, closeCalculator } from '../calculator.js';
   EXAM_MS, levelOf, formatClock, startExam, restoreExam, examProgress, finishExam, noteStudy,
 } from '../practice-lib.js';
 
@@ -156,7 +157,7 @@ function runExam(el, ctx, exam, questions) {
 
     const node = h('div', { class: 'qz-q' },
       h('div', { class: 'box qz-qbox' },
-        area ? h('div', { class: 'qz-qtop' }, h('span', { class: 'qz-area' }, area.name)) : null,
+        (area || needsCalculator(q)) ? h('div', { class: 'qz-qtop' }, area ? h('span', { class: 'qz-area' }, area.name) : h('span'), needsCalculator(q) ? calcButton() : null) : null,
         h('h2', { class: 'qz-stem' }, q.stem)),
       h('div', { class: 'qz-choices', role: 'group', 'aria-label': 'Answer choices' }, buttons),
       h('div', { class: 'ex-actions' }, prev, flagBtn, next));
@@ -236,6 +237,7 @@ function runExam(el, ctx, exam, questions) {
     exam.remainingMs = Math.max(0, Math.round(remaining));
     stop();
     finished = true;
+    closeCalculator();
     const rec = finishExam(ctx.state, exam, questions, Date.now());
     noteStudy(ctx.state);
     ctx.save();

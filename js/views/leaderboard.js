@@ -1,7 +1,7 @@
 // Chapter leaderboard (#/leaderboard): most studied this week / most ready, filterable to your event.
 // Names come from other students: every one is set with textContent (via h() text nodes), never as markup.
 import { h, icon, box } from '../ui.js';
-import { fetchBoard, sortRows, filterRows, isMe, timeAgo, eventShort } from '../leaderboard.js';
+import { fetchBoard, dedupeRows, sortRows, filterRows, isMe, timeAgo, eventShort } from '../leaderboard.js';
 import { openJoinSheet } from '../lb-join.js';
 
 let mode = 'week';     // 'week' | 'ready', remembered for the session
@@ -28,7 +28,7 @@ function rowEl(r, i, me, sortMode) {
 export function render(el, params, ctx) {
   const { state } = ctx;
   const myEvent = state.settings.event;
-  let board = { rows: state.leaderboard.cache.rows, at: state.leaderboard.cache.at };
+  let board = { rows: dedupeRows(state.leaderboard.cache.rows), at: state.leaderboard.cache.at };
   let phase = board.at ? 'ready' : 'loading';   // loading | ready | error
   let stale = false;                            // showing the saved board because a refresh failed or we're offline
   const live = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });

@@ -1,2 +1,2 @@
 // Shown in Settings → About. Bump with each published update.
-export const APP_VERSION = '1.7.4';
+export const APP_VERSION = '1.8.0';

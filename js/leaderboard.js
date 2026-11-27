@@ -70,6 +70,18 @@ export function sortRows(rows, mode) {
   const [a, b] = mode === 'ready' ? ['readiness', 'weekQuestions'] : ['weekQuestions', 'readiness'];
   return rows.slice().sort((x, y) => y[a] - x[a] || y[b] - x[b] || x.name.localeCompare(y.name));
 }
+// One row per name (case and spacing ignored): the same student can end up with two rows after a
+// reinstall or switching between Safari and the installed app. Keeps the most recently updated one.
+export function dedupeRows(rows) {
+  const best = new Map();
+  for (const r of rows) {
+    const key = String(r.name || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    if (!key) continue;
+    const have = best.get(key);
+    if (!have || (r.updated || 0) > (have.updated || 0)) best.set(key, r);
+  }
+  return rows.filter(r => best.get(String(r.name || '').toLowerCase().replace(/\s+/g, ' ').trim()) === r);
+}
 export const filterRows = (rows, eventId) => (eventId ? rows.filter(r => r.event === eventId) : rows.slice());
 
 // True when a board row is this student's (same shown name and event).
@@ -80,7 +92,7 @@ export function isMe(row, state, eventId) {
 
 // The student's 1-based place on the all-events board for `mode`, or 0 when they aren't on it.
 export function myRank(rows, state, eventId, mode = 'week') {
-  const i = sortRows(rows, mode).findIndex(r => isMe(r, state, eventId));
+  const i = sortRows(dedupeRows(rows), mode).findIndex(r => isMe(r, state, eventId));
   return i + 1;
 }
 
@@ -160,7 +172,7 @@ export async function fetchBoard(ctx, opts = {}) {
   const fetchFn = opts.fetchFn || globalThis.fetch;
   const data = await request(fetchFn, LEADERBOARD_URL, { method: 'GET' }, opts.timeoutMs || FETCH_TIMEOUT_MS);
   if (!data || data.ok !== true || !Array.isArray(data.rows)) throw new Error('Bad response');
-  const rows = data.rows.slice(0, 500).map(cleanBoardRow).filter(Boolean);
+  const rows = dedupeRows(data.rows.slice(0, 500).map(cleanBoardRow).filter(Boolean));
   const at = opts.now ?? Date.now();
   ctx.state.leaderboard.cache = { rows, at };
   ctx.save();

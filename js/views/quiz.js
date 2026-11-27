@@ -5,6 +5,7 @@ import { shuffleChoices } from '../exam.js';
 import { recordAnswer } from '../store.js';
 import { quizQuestions, noteStudy, ymd } from '../practice-lib.js';
 import { markPlanDone } from '../foryou.js';
+import { needsCalculator, calcButton, closeCalculator } from '../calculator.js';
 
 export const KEYS = 'ABCD';
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -202,7 +203,7 @@ function runQuiz(el, questions, title, ctx, planTask = null) {
     current = { choose, answered: () => answered, advance };
     swap(h('div', { class: 'qz-q' },
       h('div', { class: 'box qz-qbox' },
-        area ? h('div', { class: 'qz-qtop' }, h('span', { class: 'qz-area' }, area.name)) : null,
+        (area || needsCalculator(q)) ? h('div', { class: 'qz-qtop' }, area ? h('span', { class: 'qz-area' }, area.name) : h('span'), needsCalculator(q) ? calcButton() : null) : null,
         h('h2', { class: 'qz-stem' }, q.stem)),
       h('div', { class: 'qz-choices', role: 'group', 'aria-label': 'Answer choices' }, buttons),
       why, hint, next));
@@ -214,6 +215,7 @@ function runQuiz(el, questions, title, ctx, planTask = null) {
   }
 
   function showSummary() {
+    closeCalculator();
     current = null;
     const right = results.filter(r => r.correct).length;
     const pct = Math.round((right / n) * 100);

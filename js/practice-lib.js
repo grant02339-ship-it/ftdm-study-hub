@@ -75,7 +75,8 @@ export function quizQuestions(params, state, data, rng = Math.random) {
     const pool = QUESTIONS.filter(q => set.has(q.pi));
     return { mode: 'pis', title: 'Lesson practice', questions: shuffle(pool, rng).slice(0, clampN(params.n, 10)) };
   }
-  return { mode: 'quick', title: 'Quick 10', questions: weightedQuiz(QUESTIONS, BLUEPRINT, level, clampN(params.n, 10), rng) };
+  const n = clampN(params.n, 10);
+  return { mode: 'quick', title: n === 10 ? 'Quick 10' : `${n}-question practice test`, questions: weightedQuiz(QUESTIONS, BLUEPRINT, level, n, rng) };
 }
 
 // Card rating labels: 60000 -> "1 min", 2 days -> "2 days".

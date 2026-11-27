@@ -7,6 +7,37 @@ import { levelOf, mistakeIds, restoreExam, examProgress, formatClock } from '../
 
 let areaSize = 10; // 10 or 20, remembered for the session
 
+// Custom practice test length (1-100), remembered on this device.
+const SIZE_KEY = 'dsb-test-size';
+function savedSize() {
+  try { const n = parseInt(localStorage.getItem(SIZE_KEY), 10); return n >= 1 && n <= 100 ? n : 20; } catch (e) { return 20; }
+}
+
+function customTestBox(lvl, max) {
+  let size = Math.min(savedSize(), max);
+  const input = h('input', { class: 'ct-num num', type: 'number', inputmode: 'numeric', min: '1', max: String(max), value: String(size), 'aria-label': 'Number of questions' });
+  const start = h('a', { class: 'cta ct-start' });
+  const chips = [10, 20, 30, 50].filter(v => v <= max).map(v => h('button', { class: 'lb-chip ct-chip', type: 'button', onclick: () => set(v) }, h('span', null, String(v))));
+  function set(v, fromInput = false) {
+    const n = Math.max(1, Math.min(max, Math.round(Number(v)) || 1));
+    size = n;
+    if (!fromInput || String(n) !== input.value) input.value = String(n);
+    start.setAttribute('href', `#/quiz?mode=quick&n=${n}`);
+    start.textContent = `Start ${n}-question test`;
+    chips.forEach(c => c.classList.toggle('on', Number(c.textContent) === n));
+    try { localStorage.setItem(SIZE_KEY, String(n)); } catch (e) { /* private mode */ }
+  }
+  input.addEventListener('input', () => { if (input.value !== '') set(input.value, true); });
+  input.addEventListener('change', () => set(input.value));
+  const step = (d, label) => h('button', { class: 'ct-step', type: 'button', 'aria-label': label, onclick: () => set(size + d) }, d < 0 ? '−' : '+');
+  set(size);
+  return box('Custom practice test', null, [
+    h('p', { class: 'box-note ct-note' }, `Pick how many questions you want. They’re mixed like the ${lvl} exam.`),
+    h('div', { class: 'ct-row' }, step(-1, 'One fewer question'), input, step(1, 'One more question')),
+    h('div', { class: 'lb-chips ct-chips' }, chips),
+    start]);
+}
+
 const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 const chev = () => h('span', { class: 'chev', 'aria-hidden': 'true' }, icon('chevron'));
 const ico = iconEl => h('div', { class: 'ico' }, iconEl);
@@ -89,6 +120,7 @@ export function render(el, params, ctx) {
     h('h1', { class: 'lt' }, 'Practice'),
     h('p', { class: 'sub' }, `${QUESTIONS.length} questions across ${Object.keys(counts).length} areas`),
     quick,
+    data.EVENT.noExam ? null : customTestBox(lvl, Math.min(100, QUESTIONS.filter(q => BLUEPRINT[q.area] && BLUEPRINT[q.area][level]).length || QUESTIONS.length)),
     box('Leaderboard', null, [h('div', { class: 'group' },
       row('#/leaderboard', icon('trophy'), 'Worldwide leaderboard', state.leaderboard.optIn ? 'See where you rank this week' : 'See who’s studying the most this week'))]),
     box('Quiz by area', seg, h('div', { class: 'group' }, [...areaRows, ...soon]), { class: 'pr-areas' }),
